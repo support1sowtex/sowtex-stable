@@ -6,7 +6,7 @@ import Layout from '@/app/components/Menu';
 // import "@blobals";
 // import main from "./styles/main.module.css";
 //  import styles from "./styles/style.module.css";
-// import HomeCarousel from "@/app/components/Carousel";
+import Carousel from "@/app/components/Carousel";
 
 import Image from 'next/image';
 // import Footer from '../components/Footer';
@@ -20,7 +20,7 @@ function HomePage() {
     <>
       <Layout />
      
-      {/* <HomeCarousel  /> */}
+      <Carousel  />
       <section className="source-global-item section-padding" style={{display:'flex',textAlign:'center',justifyContent:'center' }}>
         <div className="w-1073 d-flex source-global-wrapper center-text">
           <div className="all-heading text-center">
