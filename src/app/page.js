@@ -10,8 +10,7 @@ import Layout from '@/app/components/Menu';
 
 import Image from 'next/image';
 // import Footer from '../components/Footer';
-import Breadcrumbs from '@/app/components/Breadcrumb';
-import Menu from "./components/Menu";
+
 
 
 
@@ -20,7 +19,7 @@ function HomePage() {
   return (
     <>
       <Layout />
-      <Breadcrumbs />
+     
       {/* <HomeCarousel  /> */}
       <section className="source-global-item section-padding" style={{display:'flex',textAlign:'center',justifyContent:'center' }}>
         <div className="w-1073 d-flex source-global-wrapper center-text">

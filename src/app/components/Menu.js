@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useState } from "react";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // console.log(baseUrl)
-
+import Script from 'next/script';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Menu = () => {
@@ -31,10 +31,11 @@ const Menu = () => {
         href="https://cdn.jsdelivr.net/npm/@glidejs/glide@3.4.1/dist/css/glide.core.min.css"
       />
       <link href="/assets/front/css/bootstrap.css" rel="stylesheet" />
-      <script
+      <Script
         src="https://code.jquery.com/jquery-3.7.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-      ></script>
+          strategy="lazyOnload"
+      ></Script>
 
       <header className="navbar-fixed-top">
         <div className="header-top">
@@ -43,7 +44,7 @@ const Menu = () => {
           </div>
 
           <div className="logo">
-            import Link from 'next/link'; import Image from 'next/image';
+         
             <Link href="/">
               <img
                 src="/assets/front/img/logo.png"
