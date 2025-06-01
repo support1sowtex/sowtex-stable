@@ -1,16 +1,16 @@
 // pages/index.js
 "use client";
-import Layout from '@/app/components/Menu';
+import Layout from "@/app/components/Menu";
 
 
-// import "@blobals";
+import "./globals.css";
 // import main from "./styles/main.module.css";
 //  import styles from "./styles/style.module.css";
-import Carousel from "@/app/components/Carousel";
+import HomeCarousel from "@/app/components/Carousel";
 
 import Image from 'next/image';
 // import Footer from '../components/Footer';
-
+// import Breadcrumbs from '@/app/components/Breadcrumb';
 
 
 
@@ -19,8 +19,8 @@ function HomePage() {
   return (
     <>
       <Layout />
-     
-      <Carousel  />
+      {/* <Breadcrumbs /> */}
+      <HomeCarousel  />
       <section className="source-global-item section-padding" style={{display:'flex',textAlign:'center',justifyContent:'center' }}>
         <div className="w-1073 d-flex source-global-wrapper center-text">
           <div className="all-heading text-center">
@@ -208,7 +208,7 @@ function HomePage() {
                 </div>
                  <div className="source-global-box">
                     <div className="source-global-box-img">
-                        <img src="https://sowtex.com/assets/front/img/Focused Lead Generation.png" alt="icon" width={50} height={50}/>
+                        <Image src="https://sowtex.com/assets/front/img/Focused Lead Generation.png" alt="icon" width={50} height={50}/>
                     </div>
                     <div className="source-global-box-content">
                         <p>Focused Lead Generation</p>
@@ -216,7 +216,7 @@ function HomePage() {
                 </div>
                <div className="source-global-box">
                     <div className="source-global-box-img">
-                        <img src="https://sowtex.com/assets/front/img/Vendor Portfolios.png" alt="icon"  width={50} height={50}/>
+                        <Image src="https://sowtex.com/assets/front/img/Vendor Portfolios.png" alt="icon"  width={50} height={50}/>
                     </div>
                     <div className="source-global-box-content">
                         <p>Vendor Portfolios</p>
@@ -224,7 +224,7 @@ function HomePage() {
                 </div>
                 <div className="source-global-box">
                     <div className="source-global-box-img">
-                        <img src="https://sowtex.com/assets/front/img/Customised sourcing solutions.png" alt="icon"  width={50} height={50}/>
+                        <Image src="https://sowtex.com/assets/front/img/Customised sourcing solutions.png" alt="icon"  width={50} height={50}/>
                     </div>
                     <div className="source-global-box-content">
                         <p>Customised Sourcing Solutions</p>
@@ -232,7 +232,7 @@ function HomePage() {
                 </div>
                 <div className="source-global-box">
                     <div className="source-global-box-img">
-                        <img src="https://sowtex.com/assets/front/img/Ready Stock.png" alt="icon" width={50} height={50}/>
+                        <Image src="https://sowtex.com/assets/front/img/Ready Stock.png" alt="icon" width={50} height={50}/>
                     </div>
                     <div className="source-global-box-content">
                         <p>Ready Stock</p>
@@ -240,7 +240,7 @@ function HomePage() {
                 </div>
                 <div className="source-global-box">
                     <div className="source-global-box-img">
-                        <img src="https://sowtex.com/assets/front/img/Secure Deals.png" alt="icon"  width={50} height={50}/>
+                        <Image src="https://sowtex.com/assets/front/img/Secure Deals.png" alt="icon"  width={50} height={50}/>
                     </div>
                     <div className="source-global-box-content">
                         <p>Secure Deals</p>
