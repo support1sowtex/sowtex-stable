@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import Layout from "@app/components/Menu";
+import AdminMenu from "../components/AdminMenu";
 
 import "../globals.css";
 export default function Products() {
@@ -29,7 +29,7 @@ export default function Products() {
 
   return (
     <>
-    <Layout/>
+    <AdminMenu/>
     <div className="flex flex-col items-center p-4">
       <h2 className="text-2xl font-bold">Product List</h2>
 

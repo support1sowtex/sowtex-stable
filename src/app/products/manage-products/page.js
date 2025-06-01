@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Adminmenu from "../../../components/AdminMenu";
+import AdminMenu from "../../components/AdminMenu";
 
 export default function ManageProducts() {
   const [products, setProducts] = useState([]);
@@ -40,7 +40,7 @@ export default function ManageProducts() {
 
   return (
     <>
-    <Adminmenu></Adminmenu>
+    <AdminMenu></AdminMenu>
     <div id="main" style={{ marginLeft: "220px" }}>
     <section class="content">
     <div className="row" id="prod_div">
@@ -51,7 +51,7 @@ export default function ManageProducts() {
       ) : (
         <>
           {products.map((product) => (
-            <div className="col-sm-6 col-md-3">
+            <div className="col-sm-6 col-md-3" key={product._id}>
               <div class="product-thumb">
                      <div class="product-image">
                         <img src={product.image[0]} alt="" class="img-fluid w-100" />

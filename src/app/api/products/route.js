@@ -33,34 +33,34 @@ export async function GET() {
 
     // Insert dummy users
 
-    const insertDummyUsers = async (count = 10) => {
-      try {
-        // Get current count of users with uniqueCode starting with 'IND'
-        const baseCount = await User.countDocuments({
-          uniqueCode: { $regex: /^IND/ },
-        });
-        // return false;
-        const users = [];
+    // const insertDummyUsers = async (count = 10) => {
+    //   try {
+    //     // Get current count of users with uniqueCode starting with 'IND'
+    //     const baseCount = await User.countDocuments({
+    //       uniqueCode: { $regex: /^IND/ },
+    //     });
+    //     // return false;
+    //     const users = [];
 
-        for (let i = 1; i <= count; i++) {
-          const currentIndex = baseCount + i;
-          const user = generateUser(currentIndex);
-          users.push(user);
-          // console.log(user);return false;
-        }
+    //     for (let i = 1; i <= count; i++) {
+    //       const currentIndex = baseCount + i;
+    //       const user = generateUser(currentIndex);
+    //       users.push(user);
+    //       // console.log(user);return false;
+    //     }
 
-        await User.insertMany(users);
-        console.log(
-          `${count} dummy users inserted starting from IND${(baseCount + 1)
-            .toString()
-            .padStart(7, "0")}`
-        );
-        mongoose.disconnect();
-      } catch (error) {
-        console.error("Error inserting users:", error);
-      }
-    };
-    insertDummyUsers(10);
+    //     await User.insertMany(users);
+    //     console.log(
+    //       `${count} dummy users inserted starting from IND${(baseCount + 1)
+    //         .toString()
+    //         .padStart(7, "0")}`
+    //     );
+    //     mongoose.disconnect();
+    //   } catch (error) {
+    //     console.error("Error inserting users:", error);
+    //   }
+    // };
+    // insertDummyUsers(10);
     const productsWithCategory = await Product.aggregate([
       {
         $lookup: {

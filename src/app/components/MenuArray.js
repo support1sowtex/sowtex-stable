@@ -1,5 +1,5 @@
 let url1 =process.env.MONGODB_URI;
-alert(url1);
+// alert(url1);
 const menuItems = [
     {
       title: "Dashboard",
