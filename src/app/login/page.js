@@ -1,7 +1,9 @@
 "use client";
+console.log("login page");
 import { useState } from "react";
 import Cookies from "js-cookie";
-import Menu from "@/app/components/Menu";
+console.log("login page");
+import Menu from "../components/Menu";
 // import Footer from "../../components/Footer";
 // import Breadcrumb from "@/components/Breadcrumb";
 import { useRouter } from 'next/navigation';

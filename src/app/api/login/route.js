@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import User from "@/app/Models/User";
-import connectToDatabase from "@/app/lib/dbConnect";
+import User from "../../Models/User";
+import connectToDatabase from "../../lib/dbConnect";
 export async function POST(req) {
   
   try {
