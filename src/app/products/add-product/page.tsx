@@ -5,11 +5,18 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import MultiSelect,{ Option } from "../../components/MultiSelect";
+import dynamic from 'next/dynamic';
+const MultiSelect = dynamic(
+  () => import('../../components/MultiSelect'),
+  { ssr: false }
+);
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import AdminMenu from "../../components/AdminMenu";
-import Swal from "sweetalert2";
+// import "bootstrap/dist/js/bootstrap.bundle.min.js";
+const AdminMenu = dynamic(
+  () => import('../../components/AdminMenu'),
+  { ssr: false }
+);
+
 
 export default function Sidebar() {
   const options = [
@@ -24,7 +31,10 @@ export default function Sidebar() {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
-     const el = document.getElementById("something");
+     if (typeof window !== 'undefined') {
+    import('bootstrap/dist/js/bootstrap.bundle.min.js');
+  }
+     
     if (query.length < 2) {
       setSuggestions([]);
       return;
@@ -49,8 +59,12 @@ export default function Sidebar() {
     setFormData({...formData, behalfOf: item.label}); 
     setSuggestions([]);
   };
-
+  type Option = {
+    label: string;
+    value: string;
+  };
   const [optionSelected, setSelected] = useState<Option[] | null>();
+  
   const handleChange = (selected: Option[]) => {
     setSelected(selected);
     console.log(selected);
@@ -331,12 +345,7 @@ export default function Sidebar() {
       if (!response.ok) throw new Error("Failed to submit product");
       const result = await response.json();
       
-      Swal.fire({
-        title: 'Success!',
-        text: 'Product added successfully!',
-        icon: 'success',
-        confirmButtonText: 'Cool'
-      });
+      console.log("Product added successfully:", result);
 
     } catch (error) {
       console.error("Error submitting form:", error);

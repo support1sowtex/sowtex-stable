@@ -99,7 +99,7 @@ export default function AdminMenu() {
                       className="fa fa-bars fa-2x openbtn"
                       onClick={openNav}
                       aria-hidden="true"
-                      style={{ marginLeft: "220px;" }}
+                      style={{ marginLeft: "220px" }}
                     ></i>
                   )}
                   {isOpen && (
