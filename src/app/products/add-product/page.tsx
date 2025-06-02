@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import MultiSelect from "../../components/MultiSelect";
-import type { Option } from "../../components/MultiSelect";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import AdminMenu from "../../components/AdminMenu";
