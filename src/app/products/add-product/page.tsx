@@ -351,6 +351,7 @@ export default function Sidebar() {
       console.error("Error submitting form:", error);
     }
   };
+  
 
   useEffect(() => {
     loadCategories();
