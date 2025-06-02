@@ -1,9 +1,10 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminMenu from "../components/AdminMenu";
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function ManageProducts() {
   const [products, setProducts] = useState([]);
@@ -15,6 +16,7 @@ export default function ManageProducts() {
     total: 0
   });
   const router = useRouter();
+  
 
   const fetchProducts = async (page = 1, limit = pagination.limit) => {
     try {
@@ -60,7 +62,6 @@ export default function ManageProducts() {
 
   const handleLimitChange = (e) => {
     const newLimit = parseInt(e.target.value);
-    // Update state and fetch with new limit
     setPagination(prev => ({
       ...prev,
       limit: newLimit,
@@ -74,28 +75,23 @@ export default function ManageProducts() {
   };
 
   const copyUser = (userId) => {
-    // Implement copy functionality
     console.log("Copy user", userId);
   };
 
   const openPinModal = (userId, action) => {
-    // Implement modal opening
     console.log(`${action} user`, userId);
   };
 
   const softdelete = (userId) => {
-    // Implement soft delete
     console.log("Soft delete user", userId);
   };
-
-  if (loading) return <p>Loading products...</p>;
 
   return (
     <>
       <AdminMenu></AdminMenu>
 
       <div id="main" style={{ marginLeft: "220px" }}>
-        <div className="container">
+        <div className="container-fluid">
           <section className="card top">
             <div className="card-body">
               <div className="row d-flex align-items-center">
@@ -132,138 +128,200 @@ export default function ManageProducts() {
 
           <section className="content card">
             <div className="card-body">
-              <div className="d-flex justify-content-between mb-3">
-                <div>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <div className="d-flex align-items-center">
+                  <span className="me-2">Show</span>
                   <select 
-                    className="form-select" 
+                    className="form-select form-select-sm" 
                     value={pagination.limit}
                     onChange={handleLimitChange}
                     style={{width: '80px'}}
+                    disabled={loading}
                   >
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
+                    <option value="500">500</option>
                   </select>
+                  <span className="ms-2">entries</span>
                 </div>
-                <div>
-                  <span className="me-2">
-                    Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{' '}
-                    {Math.min(pagination.currentPage * pagination.limit, pagination.total)} of{' '}
-                    {pagination.total} entries
-                  </span>
+                <div className="text-muted">
+                  {loading ? (
+                    'Loading...'
+                  ) : (
+                    `Showing ${(pagination.currentPage - 1) * pagination.limit + 1} to 
+                    ${Math.min(pagination.currentPage * pagination.limit, pagination.total)} of 
+                    ${pagination.total} entries`
+                  )}
                 </div>
               </div>
 
-              <table className="table table-striped table-bordered nowrap">
-                <thead>
-                  <tr>
-                    <th scope="col" width="100">Sno.</th>
-                    <th scope="col" width="100">Cust. Id</th>
-                    <th scope="col" width="100">Date</th>
-                    <th scope="col" width="100">Name</th>
-                    <th scope="col" width="200">Company Name</th>
-                    <th scope="col" width="200">Email</th>
-                    <th scope="col" width="200">Sell Category</th>
-                    <th scope="col" width="100">Stage</th>
-                    <th scope="col" width="100">Rating</th>
-                    <th scope="col" width="200">Designation</th>
-                    <th scope="col" width="200">Location</th>
-                    <th scope="col" width="200">Membership Plans</th>
-                    <th scope="col" width="100" className="action">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map((user, index) => (
-                    <tr key={user.orgId || index}>
-                      <th>{index + 1}</th>
-                      <th scope="row">
-                        <a href="javascript:void(0)" onClick={() => openPinModal(user.orgId, "edit")}>
-                          {user.customerId || `IN00${user.orgId}`}
-                        </a>
-                      </th>
-                      <td>{new Date().toLocaleDateString("en-GB")}</td>
-                      <td>{`${user.fName} ${user.lName}`}</td>
-                      <td>{user.companyName || user.orgName}</td>
-                      <td>{user.email}</td>
-                      <td>Woven Fabric</td>
-                      <td>Trial Registration</td>
-                      <td>0</td>
-                      <td>{user.degination || "N/A"}</td>
-                      <td>{`${user.city || ""}, ${user.state || ""}, ${user.country || ""}`}</td>
-                      <td>Trial</td>
-                      <td className="action">
-                        <div className="d-flex">
-                          <button onClick={() => copyUser(user.orgId)}>
-                            <i className="fa-regular fa-copy" aria-hidden="true"></i>
+              <div className="table-responsive">
+                {loading ? (
+                  <div className="text-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <p className="mt-2">Loading products...</p>
+                  </div>
+                ) : (
+                  <>
+                    <table className="table table-hover table-bordered">
+                      <thead className="table-light">
+                        <tr>
+                          <th width="50">#</th>
+                          <th width="100">Cust. ID</th>
+                          <th width="90">Date</th>
+                          <th width="120">Name</th>
+                          <th>Company</th>
+                          <th>Email</th>
+                          <th width="120">Category</th>
+                          <th width="100">Stage</th>
+                          <th width="80">Rating</th>
+                          <th width="120">Designation</th>
+                          <th width="150">Location</th>
+                          <th width="120">Plan</th>
+                          <th width="120" className="text-center">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {products.length > 0 ? (
+                          products.map((user, index) => (
+                            <tr key={user.orgId || index} className="align-middle">
+                              <td className="text-center">{index + 1}</td>
+                              <td>
+                                <a 
+                                  href="#" 
+                                  onClick={() => openPinModal(user.orgId, "edit")}
+                                  className="text-primary"
+                                >
+                                  {user.customerId || `IN00${user.orgId}`}
+                                </a>
+                              </td>
+                              <td>{new Date().toLocaleDateString("en-GB")}</td>
+                              <td>{`${user.fName} ${user.lName}`}</td>
+                              <td>{user.companyName || user.orgName}</td>
+                              <td>{user.email}</td>
+                              <td>Woven Fabric</td>
+                              <td>Trial Registration</td>
+                              <td>0</td>
+                              <td>{user.degination || "N/A"}</td>
+                              <td>{`${user.city || ""}, ${user.state || ""}, ${user.country || ""}`}</td>
+                              <td>Trial</td>
+                              <td className="text-center">
+                                <div className="d-flex justify-content-center">
+                                  <button 
+                                    onClick={() => copyUser(user.orgId)}
+                                    className="btn btn-sm btn-outline-secondary mx-1"
+                                  >
+                                    <i className="fa-regular fa-copy"></i>
+                                  </button>
+                                  <button 
+                                    onClick={() => openPinModal(user.orgId, "edit")}
+                                    className="btn btn-sm btn-outline-primary mx-1"
+                                  >
+                                    <i className="fa fa-pencil"></i>
+                                  </button>
+                                  <button 
+                                    onClick={() => openPinModal(user.orgId, "view")}
+                                    className="btn btn-sm btn-outline-info mx-1"
+                                  >
+                                    <i className="fa fa-eye"></i>
+                                  </button>
+                                  <button 
+                                    onClick={() => softdelete(user.orgId)}
+                                    className="btn btn-sm btn-outline-danger mx-1"
+                                  >
+                                    <i className="fa fa-times"></i>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="13" className="text-center py-4">
+                              No products found
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+
+                    <nav aria-label="Page navigation" className="mt-3">
+                      <ul className="pagination justify-content-end">
+                        <li className={`page-item ${pagination.currentPage === 1 ? 'disabled' : ''}`}>
+                          <button 
+                            className="page-link" 
+                            onClick={() => handlePageChange(1)}
+                            disabled={loading}
+                          >
+                            First
                           </button>
-                          <a className="D-edit ng-star-inserted text-dark" style={{ margin: "0 3px" }} 
-                            href="#" onClick={() => openPinModal(user.orgId, "edit")}>
-                            <i className="fa fa-pencil" aria-hidden="true"></i>
-                          </a>
-                          <a className="D-active ng-star-inserted text-info" style={{ margin: "0 3px" }} 
-                            href="#" onClick={() => openPinModal(user.orgId, "view")}>
-                            <i className="fa fa-eye" aria-hidden="true"></i>
-                          </a>
-                          <div className="d-flex" style={{ margin: "0 3px" }}>
-                            <a href="#!" id={`fa_phone1_${user.orgId}`} onClick={() => softdelete(user.orgId)} className="text-danger">
-                              <i id={`fa_phone_${user.orgId}`} className="fa fa-times" aria-hidden="true"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        </li>
+                        <li className={`page-item ${pagination.currentPage === 1 ? 'disabled' : ''}`}>
+                          <button 
+                            className="page-link" 
+                            onClick={() => handlePageChange(pagination.currentPage - 1)}
+                            disabled={loading}
+                          >
+                            Previous
+                          </button>
+                        </li>
 
-              <nav aria-label="Page navigation">
-                <ul className="pagination justify-content-end">
-                  <li className={`page-item ${pagination.currentPage === 1 ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(1)}>
-                      First
-                    </button>
-                  </li>
-                  <li className={`page-item ${pagination.currentPage === 1 ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(pagination.currentPage - 1)}>
-                      Previous
-                    </button>
-                  </li>
+                        {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                          let pageNum;
+                          if (pagination.totalPages <= 5) {
+                            pageNum = i + 1;
+                          } else if (pagination.currentPage <= 3) {
+                            pageNum = i + 1;
+                          } else if (pagination.currentPage >= pagination.totalPages - 2) {
+                            pageNum = pagination.totalPages - 4 + i;
+                          } else {
+                            pageNum = pagination.currentPage - 2 + i;
+                          }
 
-                  {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (pagination.totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (pagination.currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (pagination.currentPage >= pagination.totalPages - 2) {
-                      pageNum = pagination.totalPages - 4 + i;
-                    } else {
-                      pageNum = pagination.currentPage - 2 + i;
-                    }
+                          return (
+                            <li 
+                              key={pageNum} 
+                              className={`page-item ${pagination.currentPage === pageNum ? 'active' : ''}`}
+                            >
+                              <button 
+                                className="page-link" 
+                                onClick={() => handlePageChange(pageNum)}
+                                disabled={loading}
+                              >
+                                {pageNum}
+                              </button>
+                            </li>
+                          );
+                        })}
 
-                    return (
-                      <li key={pageNum} className={`page-item ${pagination.currentPage === pageNum ? 'active' : ''}`}>
-                        <button className="page-link" onClick={() => handlePageChange(pageNum)}>
-                          {pageNum}
-                        </button>
-                      </li>
-                    );
-                  })}
-
-                  <li className={`page-item ${pagination.currentPage === pagination.totalPages ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(pagination.currentPage + 1)}>
-                      Next
-                    </button>
-                  </li>
-                  <li className={`page-item ${pagination.currentPage === pagination.totalPages ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(pagination.totalPages)}>
-                      Last
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+                        <li className={`page-item ${pagination.currentPage === pagination.totalPages ? 'disabled' : ''}`}>
+                          <button 
+                            className="page-link" 
+                            onClick={() => handlePageChange(pagination.currentPage + 1)}
+                            disabled={loading}
+                          >
+                            Next
+                          </button>
+                        </li>
+                        <li className={`page-item ${pagination.currentPage === pagination.totalPages ? 'disabled' : ''}`}>
+                          <button 
+                            className="page-link" 
+                            onClick={() => handlePageChange(pagination.totalPages)}
+                            disabled={loading}
+                          >
+                            Last
+                          </button>
+                        </li>
+                      </ul>
+                    </nav>
+                  </>
+                )}
+              </div>
             </div>
           </section>
         </div>
