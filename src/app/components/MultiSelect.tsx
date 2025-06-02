@@ -1,30 +1,35 @@
-// src/components/MultiSelect.tsx
 import { useState, useRef } from "react";
-import { default as ReactSelect, components } from "react-select";
+import { default as ReactSelect, components, InputAction } from "react-select";
 
-const MultiSelect = (props) => {
-  const [selectInput, setSelectInput] = useState("");
-  const isAllSelected = useRef(false);
-  const selectAllLabel = useRef("Select all");
+export type Option = {
+  value: number | string;
+  label: string;
+};
+
+const MultiSelect = (props: any) => {
+  const [selectInput, setSelectInput] = useState<string>("");
+  const isAllSelected = useRef<boolean>(false);
+  const selectAllLabel = useRef<string>("Select all");
   const allOption = { value: "*", label: selectAllLabel.current };
 
-  const filterOptions = (options, input) =>
-    options?.filter(({ label }) =>
+  const filterOptions = (options: Option[], input: string) =>
+    options?.filter(({ label }: Option) =>
       label.toLowerCase().includes(input.toLowerCase())
     );
 
-  const comparator = (v1, v2) => v1.value - v2.value;
+  const comparator = (v1: Option, v2: Option) =>
+    (v1.value as number) - (v2.value as number);
 
   let filteredOptions = filterOptions(props.options, selectInput);
   let filteredSelectedOptions = filterOptions(props.value, selectInput);
 
-  const Option = (optionProps) => (
-    <components.Option {...optionProps}>
-      {optionProps.value === "*" &&
+  const Option = (props: any) => (
+    <components.Option {...props}>
+      {props.value === "*" &&
       !isAllSelected.current &&
       filteredSelectedOptions?.length > 0 ? (
         <input
-          key={optionProps.value}
+          key={props.value}
           type="checkbox"
           ref={(input) => {
             if (input) input.indeterminate = true;
@@ -32,119 +37,127 @@ const MultiSelect = (props) => {
         />
       ) : (
         <input
-          key={optionProps.value}
+          key={props.value}
           type="checkbox"
-          checked={optionProps.isSelected || isAllSelected.current}
+          checked={props.isSelected || isAllSelected.current}
           onChange={() => {}}
         />
       )}
-      <label style={{ marginLeft: "5px" }}>{optionProps.label}</label>
+      <label style={{ marginLeft: "5px" }}>{props.label}</label>
     </components.Option>
   );
 
-  const Input = (inputProps) => (
+  const Input = (props: any) => (
     <>
       {selectInput.length === 0 ? (
-        <components.Input autoFocus={inputProps.selectProps.menuIsOpen} {...inputProps}>
-          {inputProps.children}
+        <components.Input autoFocus={props.selectProps.menuIsOpen} {...props}>
+          {props.children}
         </components.Input>
       ) : (
         <div style={{ border: "1px dotted gray" }}>
-          <components.Input autoFocus={inputProps.selectProps.menuIsOpen} {...inputProps}>
-            {inputProps.children}
+          <components.Input autoFocus={props.selectProps.menuIsOpen} {...props}>
+            {props.children}
           </components.Input>
         </div>
       )}
     </>
   );
 
-  const customFilterOption = ({ value, label }, input) =>
+  const customFilterOption = ({ value, label }: Option, input: string) =>
     (value !== "*" && label.toLowerCase().includes(input.toLowerCase())) ||
     (value === "*" && filteredOptions?.length > 0);
 
-  const onInputChange = (inputValue, event) => {
+  const onInputChange = (
+    inputValue: string,
+    event: { action: InputAction }
+  ) => {
     if (event.action === "input-change") setSelectInput(inputValue);
-    else if (event.action === "menu-close" && selectInput !== "") setSelectInput("");
+    else if (event.action === "menu-close" && selectInput !== "")
+      setSelectInput("");
   };
 
-  const onKeyDown = (e) => {
-    if ((e.key === " " || e.key === "Enter") && !selectInput) e.preventDefault();
+  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if ((e.key === " " || e.key === "Enter") && !selectInput)
+      e.preventDefault();
   };
 
-  const handleChange = (selected) => {
+  const handleChange = (selected: Option[]) => {
     if (
       selected.length > 0 &&
       !isAllSelected.current &&
       (selected[selected.length - 1].value === allOption.value ||
-        JSON.stringify(filteredOptions) === JSON.stringify(selected.sort(comparator)))
-    ) {
+        JSON.stringify(filteredOptions) ===
+          JSON.stringify(selected.sort(comparator)))
+    )
       return props.onChange(
         [
           ...(props.value ?? []),
           ...props.options.filter(
-            ({ label }) =>
-              label.toLowerCase().includes(selectInput.toLowerCase()) &&
-              (props.value ?? []).filter((opt) => opt.label === label).length === 0
+            ({ label }: Option) =>
+              label.toLowerCase().includes(selectInput?.toLowerCase()) &&
+              (props.value ?? []).filter((opt: Option) => opt.label === label)
+                .length === 0
           ),
         ].sort(comparator)
       );
-    } else if (
+    else if (
       selected.length > 0 &&
       selected[selected.length - 1].value !== allOption.value &&
-      JSON.stringify(selected.sort(comparator)) !== JSON.stringify(filteredOptions)
-    ) {
+      JSON.stringify(selected.sort(comparator)) !==
+        JSON.stringify(filteredOptions)
+    )
       return props.onChange(selected);
-    } else {
+    else
       return props.onChange([
-        ...(props.value ?? []).filter(
-          ({ label }) => !label.toLowerCase().includes(selectInput.toLowerCase())
+        ...props.value?.filter(
+          ({ label }: Option) =>
+            !label.toLowerCase().includes(selectInput?.toLowerCase())
         ),
       ]);
-    }
   };
 
   const customStyles = {
-    multiValueLabel: (def) => ({
+    multiValueLabel: (def: any) => ({
       ...def,
       backgroundColor: "lightgray",
     }),
-    multiValueRemove: (def) => ({
+    multiValueRemove: (def: any) => ({
       ...def,
       backgroundColor: "lightgray",
     }),
-    valueContainer: (base) => ({
+    valueContainer: (base: any) => ({
       ...base,
       maxHeight: "65px",
       overflow: "auto",
     }),
-    option: (styles, { isSelected, isFocused }) => ({
-      ...styles,
-      backgroundColor:
-        isSelected && !isFocused
-          ? null
-          : isFocused && !isSelected
-          ? styles.backgroundColor
-          : isFocused && isSelected
-          ? "#DEEBFF"
-          : null,
-      color: isSelected ? null : null,
-    }),
-    menu: (def) => ({ ...def, zIndex: 9999 }),
+    option: (styles: any, { isSelected, isFocused }: any) => {
+      return {
+        ...styles,
+        backgroundColor:
+          isSelected && !isFocused
+            ? null
+            : isFocused && !isSelected
+            ? styles.backgroundColor
+            : isFocused && isSelected
+            ? "#DEEBFF"
+            : null,
+        color: isSelected ? null : null,
+      };
+    },
+    menu: (def: any) => ({ ...def, zIndex: 9999 }),
   };
 
   if (props.isSelectAll && props.options.length !== 0) {
     isAllSelected.current =
-      JSON.stringify(filteredSelectedOptions) === JSON.stringify(filteredOptions);
+      JSON.stringify(filteredSelectedOptions) ===
+      JSON.stringify(filteredOptions);
 
     if (filteredSelectedOptions?.length > 0) {
-      if (filteredSelectedOptions?.length === filteredOptions?.length) {
+      if (filteredSelectedOptions?.length === filteredOptions?.length)
         selectAllLabel.current = `All (${filteredOptions.length}) selected`;
-      } else {
+      else
         selectAllLabel.current = `${filteredSelectedOptions?.length} / ${filteredOptions.length} selected`;
-      }
-    } else {
-      selectAllLabel.current = "Select all";
-    }
+    } else selectAllLabel.current = "Select all";
 
     allOption.label = selectAllLabel.current;
 

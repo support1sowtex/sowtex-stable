@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import MultiSelect from "../../components/MultiSelect";
+import MultiSelect,{ Option } from "../../components/MultiSelect";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import AdminMenu from "../../components/AdminMenu";
@@ -23,6 +24,7 @@ export default function Sidebar() {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
+     const el = document.getElementById("something");
     if (query.length < 2) {
       setSuggestions([]);
       return;
@@ -46,12 +48,10 @@ export default function Sidebar() {
     setQuery(item.label);
     setFormData({...formData, behalfOf: item.label}); 
     setSuggestions([]);
-    // onSelect(item); // Now always safe
   };
+
   const [optionSelected, setSelected] = useState<Option[] | null>();
   const handleChange = (selected: Option[]) => {
-    // console.log(sele)
-
     setSelected(selected);
     console.log(selected);
   };
@@ -106,31 +106,38 @@ export default function Sidebar() {
     { value: "63", label: "Air Textured Yarn(ATY)" },
     { value: "55", label: "Boxes(Bxs)" },
     { value: "11", label: "Centimeters(Cm)" },
-    // ... other unit options
   ]);
   const [selectedUnit, setSelectedUnit] = useState("");
   const [sizeInput, setSizeInput] = useState("");
   const [files, setFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const fileInputRef = useRef(null);
 
-  // Load categories (mock API call)
+  // Clean up object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      previewImages.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [previewImages]);
+
   const loadCategories = async () => {
     try {
       const res = await fetch("/api/categories");
       const data = await res.json();
-
-      // Add "All Category" option manually
       setCategories([{ value: "0", label: "All Category" }, ...data]);
     } catch (err) {
       console.error("Error loading categories:", err);
     }
   };
+
   const removeImage = (index) => {
     const newFiles = [...files];
     const newPreviews = [...previewImages];
+
+    // Revoke the object URL to free memory
+    URL.revokeObjectURL(newPreviews[index]);
 
     newFiles.splice(index, 1);
     newPreviews.splice(index, 1);
@@ -139,14 +146,11 @@ export default function Sidebar() {
     setPreviewImages(newPreviews);
   };
 
-  // Load subcategories based on selected category
   const loadSubCategories = async (catId) => {
     if (catId === "0") {
       setSubCategories([{ value: "", label: "Select" }]);
       return;
     }
-
-    // In a real app, you would fetch this from your API
 
     const mockSubCategories = [
       { value: "376", label: "Beach Wear" },
@@ -178,14 +182,11 @@ export default function Sidebar() {
     setSubCategories([{ value: "", label: "Select" }, ...mockSubCategories]);
   };
 
-  // Load color options (mock API call)
   const loadColorOptions = async () => {
-    // In a real app, you would fetch this from your API
     const mockColors = ["Red", "Blue", "Green", "Black", "White"];
     setColorOptions(mockColors);
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -195,7 +196,6 @@ export default function Sidebar() {
     });
   };
 
-  // Handle color selection
   const handleColorChange = (color, isChecked) => {
     if (isChecked) {
       setFormData({
@@ -210,7 +210,6 @@ export default function Sidebar() {
     }
   };
 
-  // Handle certification selection
   const handleCertificationChange = (cert, isChecked) => {
     if (isChecked) {
       setFormData({
@@ -225,7 +224,6 @@ export default function Sidebar() {
     }
   };
 
-  // Add size to the form
   const addSize = () => {
     if (!sizeInput || !selectedUnit) {
       alert("Please enter both size and select a unit");
@@ -249,7 +247,6 @@ export default function Sidebar() {
     setSelectedUnit("");
   };
 
-  // Remove size from the form
   const removeSize = (index) => {
     const newSizes = [...formData.sizes];
     newSizes.splice(index, 1);
@@ -259,11 +256,10 @@ export default function Sidebar() {
     });
   };
 
-  // Handle file upload
   const MAX_FILES = 4;
 
   const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
+    const selectedFiles = Array.from(e.target.files || []);
     const totalFiles = files.length + selectedFiles.length;
 
     if (totalFiles > MAX_FILES) {
@@ -271,26 +267,27 @@ export default function Sidebar() {
       alert(
         `You can only upload up to ${MAX_FILES} images. You can add ${remainingSlots} more.`
       );
-      selectedFiles.splice(remainingSlots); // Trim extra files
+      selectedFiles.splice(remainingSlots);
     }
 
-    const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
+    const newPreviews = selectedFiles
+  .filter(file => file)
+  .map((file) => URL.createObjectURL(file as File));
+      
     setFiles([...files, ...selectedFiles]);
     setPreviewImages([...previewImages, ...newPreviews]);
 
-    // Reset input value to allow re-selecting the same file again
     e.target.value = null;
   };
 
-  // Validate form
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.behalfOf) newErrors.behalfOf = "On behalf of is required";
     if (formData.cat === "0") newErrors.cat = "Category is required";
     if (!formData.sub_cat) newErrors.sub_cat = "Subcategory is required";
     if (!formData.sku) newErrors.sku = "Article number is required";
-    if (optionSelected.length === 0)
+    if (optionSelected?.length === 0)
       newErrors.colors = "At least one color/finish is required";
     if (!formData.moq) newErrors.moq = "MOQ is required";
     if (!formData.content) newErrors.content = "Content is required";
@@ -304,7 +301,6 @@ export default function Sidebar() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -312,46 +308,41 @@ export default function Sidebar() {
 
     try {
       const formPayload = new FormData();
-
-      // Append regular form data
       formPayload.append("formData", JSON.stringify(formData));
 
-      // Append files
       files.forEach((file, index) => {
         formPayload.append(`files`, file);
       });
+      
       if (optionSelected) {
-        const colorNames = optionSelected.map((option) => option.label); // Extract just the labels (color names)
+        const colorNames = optionSelected.map((option) => option.label);
         formPayload.append("selectedOptions", JSON.stringify(colorNames));
       }
+
       for (let [key, value] of formPayload.entries()) {
         console.log(`${key}:`, value);
       }
 
-      // document.body.classList.add('waiting');
       const response = await fetch("/api/add-products", {
         method: "POST",
         body: formPayload,
       });
 
       if (!response.ok) throw new Error("Failed to submit product");
-      document.body.classList.remove("waiting");
       const result = await response.json();
-      // Swal.fire({
-      //           title: 'Success!',
-      //           text: 'Product added successfully!',
-      //           icon: 'success',
-      //           confirmButtonText: 'Cool'
-      //         });
+      
+      Swal.fire({
+        title: 'Success!',
+        text: 'Product added successfully!',
+        icon: 'success',
+        confirmButtonText: 'Cool'
+      });
 
-      // Optionally redirect
-      // router.push("/control-panel/manage-products");
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
-  // Load initial data
   useEffect(() => {
     loadCategories();
     loadColorOptions();
@@ -418,19 +409,19 @@ export default function Sidebar() {
                     <div className="col-sm-4 col-md-4">
                       <div className="mb-2 autocomplete relative">
                         <label>On behalf of</label>
-                       <input
-  type="text"
-  className="form-control rounded-0"
-  id="behalfOf"
-  placeholder="Company"
-  name="behalfOf"  // Change from "bahalf" to "behalfOf"
-  value={query}
-  onChange={(e) => {
-    setQuery(e.target.value);
-    setFormData({...formData, behalfOf: e.target.value});
-  }}
-  autoComplete="off"
-/>
+                        <input
+                          type="text"
+                          className="form-control rounded-0"
+                          id="behalfOf"
+                          placeholder="Company"
+                          name="behalfOf"
+                          value={query}
+                          onChange={(e) => {
+                            setQuery(e.target.value);
+                            setFormData({...formData, behalfOf: e.target.value});
+                          }}
+                          autoComplete="off"
+                        />
                         <div className="autocomplete-items absolute bg-white border w-full z-10">
                           {suggestions.map((item, idx) => (
                             <div
@@ -442,7 +433,7 @@ export default function Sidebar() {
                             </div>
                           ))}
                         </div>
-                         {errors.behalfOf && (
+                        {errors.behalfOf && (
                         <div className="text-danger">{errors.behalfOf}</div>
                       )}
                       </div>
@@ -711,25 +702,6 @@ export default function Sidebar() {
                       ></div>
                     </div>
 
-                    {/* <div className="col-12">
-                      <div
-                        id="sortableImgThumbnailPreview"
-                        className="ui-sortable"
-                      >
-                        {previewImages.map((preview, index) => (
-                          <img
-                            key={index}
-                            src={preview}
-                            alt={`Preview ${index}`}
-                            style={{
-                              width: "100px",
-                              height: "100px",
-                              margin: "5px",
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div> */}
                     <div className="col-12">
                       <div
                         id="sortableImgThumbnailPreview"
