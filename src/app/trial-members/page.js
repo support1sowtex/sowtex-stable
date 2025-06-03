@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import AdminMenu from "../components/AdminMenu";
-
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function ManageProducts() {
   const [products, setProducts] = useState([]);
@@ -13,34 +12,34 @@ export default function ManageProducts() {
     currentPage: 1,
     totalPages: 1,
     limit: 10,
-    total: 0
+    total: 0,
   });
-  const router = useRouter();
-  
 
-  const fetchProducts = async (page = 1, limit = pagination.limit) => {
+  const router = useRouter();
+
+  const fetchProducts = useCallback(async (page = 1, limit = pagination.limit) => {
     try {
       setLoading(true);
       const res = await fetch(`/api/trial-members?page=${page}&limit=${limit}`);
-      
+
       if (!res.ok) {
         throw new Error(`Server returned ${res.status}`);
       }
 
       const data = await res.json();
-      
+
       if (data.status !== "ok") {
         throw new Error(data.message || "Invalid response format");
       }
 
       setProducts(data.users || []);
-      setPagination({
+      setPagination((prev) => ({
+        ...prev,
         currentPage: page,
         totalPages: data.pagination?.totalPages || 1,
         limit: limit,
-        total: data.pagination?.total || data.users?.length || 0
-      });
-
+        total: data.pagination?.total || data.users?.length || 0,
+      }));
     } catch (err) {
       console.error("Fetch error:", err);
       alert(`Error loading data: ${err.message}`);
@@ -48,11 +47,11 @@ export default function ManageProducts() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pagination.limit]);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
@@ -62,10 +61,10 @@ export default function ManageProducts() {
 
   const handleLimitChange = (e) => {
     const newLimit = parseInt(e.target.value);
-    setPagination(prev => ({
+    setPagination((prev) => ({
       ...prev,
       limit: newLimit,
-      currentPage: 1
+      currentPage: 1,
     }));
     fetchProducts(1, newLimit);
   };
@@ -88,7 +87,7 @@ export default function ManageProducts() {
 
   return (
     <>
-      <AdminMenu></AdminMenu>
+      <AdminMenu />
 
       <div id="main" style={{ marginLeft: "220px" }}>
         <div className="container-fluid">
@@ -98,12 +97,7 @@ export default function ManageProducts() {
                 <div className="col-sm">
                   <div className="page-title">Trial Members</div>
                 </div>
-                <div className="col-sm align-self-end text-end">
-                  <div className="d-none d-sm-block">
-                    <a href="">
-                      <i className="fa fa-angle-double-left" aria-hidden="true"></i> Back
-                    </a>
-                  </div>
+                <div className="col-sm text-end">
                   <div className="breadcrumb-box">
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb">
@@ -131,11 +125,11 @@ export default function ManageProducts() {
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <div className="d-flex align-items-center">
                   <span className="me-2">Show</span>
-                  <select 
-                    className="form-select form-select-sm" 
+                  <select
+                    className="form-select form-select-sm"
                     value={pagination.limit}
                     onChange={handleLimitChange}
-                    style={{width: '80px'}}
+                    style={{ width: "80px" }}
                     disabled={loading}
                   >
                     <option value="5">5</option>
@@ -148,13 +142,11 @@ export default function ManageProducts() {
                   <span className="ms-2">entries</span>
                 </div>
                 <div className="text-muted">
-                  {loading ? (
-                    'Loading...'
-                  ) : (
-                    `Showing ${(pagination.currentPage - 1) * pagination.limit + 1} to 
-                    ${Math.min(pagination.currentPage * pagination.limit, pagination.total)} of 
-                    ${pagination.total} entries`
-                  )}
+                  {loading
+                    ? "Loading..."
+                    : `Showing ${(pagination.currentPage - 1) * pagination.limit + 1} to 
+                      ${Math.min(pagination.currentPage * pagination.limit, pagination.total)} of 
+                      ${pagination.total} entries`}
                 </div>
               </div>
 
@@ -183,7 +175,9 @@ export default function ManageProducts() {
                           <th width="120">Designation</th>
                           <th width="150">Location</th>
                           <th width="120">Plan</th>
-                          <th width="120" className="text-center">Actions</th>
+                          <th width="120" className="text-center">
+                            Actions
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -192,8 +186,8 @@ export default function ManageProducts() {
                             <tr key={user.orgId || index} className="align-middle">
                               <td className="text-center">{index + 1}</td>
                               <td>
-                                <a 
-                                  href="#" 
+                                <a
+                                  href="#"
                                   onClick={() => openPinModal(user.orgId, "edit")}
                                   className="text-primary"
                                 >
@@ -212,25 +206,25 @@ export default function ManageProducts() {
                               <td>Trial</td>
                               <td className="text-center">
                                 <div className="d-flex justify-content-center">
-                                  <button 
+                                  <button
                                     onClick={() => copyUser(user.orgId)}
                                     className="btn btn-sm btn-outline-secondary mx-1"
                                   >
                                     <i className="fa-regular fa-copy"></i>
                                   </button>
-                                  <button 
+                                  <button
                                     onClick={() => openPinModal(user.orgId, "edit")}
                                     className="btn btn-sm btn-outline-primary mx-1"
                                   >
                                     <i className="fa fa-pencil"></i>
                                   </button>
-                                  <button 
+                                  <button
                                     onClick={() => openPinModal(user.orgId, "view")}
                                     className="btn btn-sm btn-outline-info mx-1"
                                   >
                                     <i className="fa fa-eye"></i>
                                   </button>
-                                  <button 
+                                  <button
                                     onClick={() => softdelete(user.orgId)}
                                     className="btn btn-sm btn-outline-danger mx-1"
                                   >
@@ -252,18 +246,18 @@ export default function ManageProducts() {
 
                     <nav aria-label="Page navigation" className="mt-3">
                       <ul className="pagination justify-content-end">
-                        <li className={`page-item ${pagination.currentPage === 1 ? 'disabled' : ''}`}>
-                          <button 
-                            className="page-link" 
+                        <li className={`page-item ${pagination.currentPage === 1 ? "disabled" : ""}`}>
+                          <button
+                            className="page-link"
                             onClick={() => handlePageChange(1)}
                             disabled={loading}
                           >
                             First
                           </button>
                         </li>
-                        <li className={`page-item ${pagination.currentPage === 1 ? 'disabled' : ''}`}>
-                          <button 
-                            className="page-link" 
+                        <li className={`page-item ${pagination.currentPage === 1 ? "disabled" : ""}`}>
+                          <button
+                            className="page-link"
                             onClick={() => handlePageChange(pagination.currentPage - 1)}
                             disabled={loading}
                           >
@@ -284,12 +278,14 @@ export default function ManageProducts() {
                           }
 
                           return (
-                            <li 
-                              key={pageNum} 
-                              className={`page-item ${pagination.currentPage === pageNum ? 'active' : ''}`}
+                            <li
+                              key={pageNum}
+                              className={`page-item ${
+                                pagination.currentPage === pageNum ? "active" : ""
+                              }`}
                             >
-                              <button 
-                                className="page-link" 
+                              <button
+                                className="page-link"
                                 onClick={() => handlePageChange(pageNum)}
                                 disabled={loading}
                               >
@@ -299,18 +295,26 @@ export default function ManageProducts() {
                           );
                         })}
 
-                        <li className={`page-item ${pagination.currentPage === pagination.totalPages ? 'disabled' : ''}`}>
-                          <button 
-                            className="page-link" 
+                        <li
+                          className={`page-item ${
+                            pagination.currentPage === pagination.totalPages ? "disabled" : ""
+                          }`}
+                        >
+                          <button
+                            className="page-link"
                             onClick={() => handlePageChange(pagination.currentPage + 1)}
                             disabled={loading}
                           >
                             Next
                           </button>
                         </li>
-                        <li className={`page-item ${pagination.currentPage === pagination.totalPages ? 'disabled' : ''}`}>
-                          <button 
-                            className="page-link" 
+                        <li
+                          className={`page-item ${
+                            pagination.currentPage === pagination.totalPages ? "disabled" : ""
+                          }`}
+                        >
+                          <button
+                            className="page-link"
                             onClick={() => handlePageChange(pagination.totalPages)}
                             disabled={loading}
                           >

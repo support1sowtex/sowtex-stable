@@ -1,16 +1,36 @@
+// // components/SignupForm.js
 "use client";
+// // components/SignupForm.js
 import Layout from "../components/Menu";
 import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
-// import Breadcrumbs from "../../components/Breadcrumb";
+import Breadcrumbs from "../components/Breadcrumb";
 import axios from "axios";
+import {
+  Container,
+  TextField,
+  Button,
+  Box,
+  Typography,
+  MenuItem,
+  FormControl,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  Checkbox,
+  Link as MuiLink,
+} from "@mui/material";
 
-export default function SignupForm() {
+const SignupForm = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
-  const [errors, setErrors] = useState({});
-  
+  const [country, setCountry] = useState("");
+  const [countryInput, setCountryInput] = useState("+91");
+  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+  const [selectedFlag, setSelectedFlag] = useState(
+    "https://sowtex.com/assets/img/flags/in.png"
+  );
   const [formData, setFormData] = useState({
     fName: "",
     CName: "",
@@ -28,138 +48,184 @@ export default function SignupForm() {
     password: "",
     password_confirm: "",
     membership: "",
-    memType: "",
-    agree: false
   });
 
-  // Fetch countries on component mount
-  useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await axios.get("https://sowtex.com/get-all-countries");
-        setCountries(response.data);
-      } catch (error) {
-        console.error("Error loading countries:", error);
-      }
-    };
-    fetchCountries();
-  }, []);
+  // console.log(formData.fName)
 
   const handleCountry = async (e) => {
     const selectedCountry = e.target.value;
-    setFormData(prev => ({ 
-      ...prev, 
-      country: selectedCountry, 
-      state: "", 
-      city: "" 
-    }));
-    setStates([]);
+  
+    setFormData((prev) => ({ ...prev, country: selectedCountry, state: "", city: "" }));
+    setStates([]); // Reset states and cities on country change
     setCities([]);
-
+  
     if (!selectedCountry) return;
-
+  
     try {
       const response = await axios.get("https://sowtex.com/get-state-by-countryid-app", {
         params: { id: selectedCountry },
       });
+  
       setStates(response.data || []);
     } catch (error) {
       console.error("Failed to fetch states:", error);
     }
   };
-
+  
   const handleStates = async (e) => {
     const selectedState = e.target.value;
-    setFormData(prev => ({ 
-      ...prev, 
-      state: selectedState, 
-      city: "" 
-    }));
-    setCities([]);
-
+  
+    setFormData((prev) => ({ ...prev, state: selectedState, city: "" }));
+    setCities([]); // Reset cities on state change
+  
     if (!selectedState) return;
-
+  
     try {
       const response = await axios.get("https://sowtex.com/get-city-app", {
         params: { id: selectedState },
       });
+  
       setCities(response.data || []);
     } catch (error) {
       console.error("Failed to fetch cities:", error);
     }
   };
+  const handlePhoneCode= async(e)=>{
+     const selectedCity = e.target.value;
+    setFormData((prev) => ({ ...prev, code: selectedCity }));
+    console.log(selectedCity);
 
-  const handlePhoneCode = (e) => {
-    const selectedCode = e.target.value;
-    setFormData(prev => ({ ...prev, code: selectedCode }));
-  };
-
-  const handleCity = (e) => {
+  }
+  
+  const handleCity  = (e) => {
     const selectedCity = e.target.value;
-    setFormData(prev => ({ ...prev, city: selectedCity }));
+    setFormData((prev) => ({ ...prev, city: selectedCity }));
   };
-
+  
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
-
-  const validateForm = () => {
-    const newErrors = {};
-    const requiredFields = [
-      'fName', 'lName', 'email', 'code', 'phoneNumber', 
-      'CName', 'natOfBus', 'degination', 'country', 
-      'state', 'password', 'password_confirm', 'memType'
-    ];
-
-    requiredFields.forEach(field => {
-      if (!formData[field] || formData[field].toString().trim() === "") {
-        newErrors[field] = `${field.replace(/([A-Z])/g, ' $1')} is required`;
-      }
-    });
-
-    // Email validation
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+  // console.log(formData);return false
+  const [errors, setErrors] = useState({});
+  const getCountries = async () => {
+    try {
+      const configurationObject = {
+        method: "get",
+        url: `https://sowtex.com/get-all-countries`,
+      };
+      const response = await axios(configurationObject);
+      setCountries(response.data);
+      // console.log(response.data);
+    } catch (error) {
+      console.log(error);
     }
-
-    // Password confirmation
-    if (formData.password !== formData.password_confirm) {
-      newErrors.password_confirm = "Passwords do not match";
-    }
-
-    // Terms agreement
-    if (!formData.agree) {
-      newErrors.agree = "You must agree to the terms and conditions";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
+  useEffect(() => {
+    fetch("https://sowtex.com/get-all-countries")
+      .then((res) => res.json())
+      .then((data) => setCountries(data))
+      .catch((err) => console.error("Error loading countries:", err));
+  }, []);
+  const baseUrl = "http://localhost/sowtex3.0/";
+
+  const phoneCode = [
+    { value: "91", label: "+91" },
+    { value: "880", label: "+880" },
+    { value: "93", label: "+93" },
+  ];
+  useEffect(() => {
+    getCountries();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) return;
-
+  
+    const newErrors = {};
+  
+    // Validate each field individually
+    if (!formData.fName || formData.fName.trim() === "") {
+      newErrors.fName = "First Name is required";
+    }
+  
+    if (!formData.lName || formData.lName.trim() === "") {
+      newErrors.lName = "Last Name is required";
+    }
+  
+    if (!formData.email || formData.email.trim() === "") {
+      newErrors.email = "Email is required";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = "Please enter a valid email address";
+      }
+    }
+  
+    if (!formData.code || formData.code.trim() === "") {
+      newErrors.code = "Code is required";
+    }
+  
+    if (!formData.phoneNumber || formData.phoneNumber.trim() === "") {
+      newErrors.phoneNumber = "Phone No is required";
+    }
+     if (!formData.CName || formData.CName.trim() === "") {
+      newErrors.CName = "Company Name is required";
+    }
+  
+    if (!formData.natOfBus || formData.natOfBus.trim() === "" || formData.natOfBus === "Select") {
+      newErrors.natOfBus = "Nature of Business is required";
+    }
+  
+    if (!formData.degination || formData.degination.trim() === "" || formData.degination === "Select") {
+      newErrors.degination = "Designation is required";
+    }
+  
+    if (!formData.country || formData.country.trim() === "" || formData.country === "Select") {
+      newErrors.country = "Country is required";
+    }
+  
+    if (!formData.state || formData.state.trim() === "" || formData.state === "Select") {
+      newErrors.state = "State is required";
+    }
+  
+    if (!formData.password || formData.password.trim() === "") {
+      newErrors.password = "Password is required";
+    }
+  
+    if (!formData.password_confirm || formData.password_confirm.trim() === "") {
+      newErrors.password_confirm = "Confirm Password is required";
+    }
+  
+    // If any error exists, set them all at once
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+  
+      // Focus on the first invalid field
+      const firstInvalidField = Object.keys(newErrors)[0];
+      const fieldElement = document.querySelector(`[name="${firstInvalidField}"]`);
+      if (fieldElement) fieldElement.focus();
+  
+      return;
+    }
+  
+    // No errors – proceed with submit
+    setErrors({});
+  
     try {
       const response = await axios.post("/api/signup", formData);
       console.log("Submitted successfully:", response.data);
       alert("Registration Successful!");
-      // Optionally reset form here
+      // setFormData({}); // Optionally reset form
     } catch (error) {
       console.error("Signup failed:", error.response?.data);
-      alert("Registration Failed: " + (error.response?.data?.message || "Please try again"));
+      alert("Registration Failed: " + error.response?.data?.message);
     }
   };
-
+  
   return (
     <>
-      <Layout />
-      {/* <Breadcrumbs /> */}
+      <Layout></Layout>
+      <Breadcrumbs />
       <section id="register">
         <div className="container">
           <div className="register container">
@@ -178,23 +244,29 @@ export default function SignupForm() {
                     Create your account and boost your business
                   </p>
                   <hr />
-                  <div className="alert alert-danger d-none" role="alert" id="email_exist_div">
+                  <div
+                    className="alert alert-danger d-none"
+                    role="alert"
+                    id="email_exist_div"
+                  >
                     Email Already Registered
                   </div>
-                  <form onSubmit={handleSubmit}>
+                  <form >
                     <div className="row">
                       <div className="col-sm-6 mb-2">
                         <label>First Name</label>
                         <input
                           type="text"
-                          className={`form-control ${errors.fName ? 'is-invalid' : ''}`}
+                          className="form-control"
                           name="fName"
                           placeholder="Enter First Name"
-                          value={formData.fName}
                           onChange={handleInputChange}
                         />
                         {errors.fName && (
-                          <div className="invalid-feedback d-block">
+                          <div
+                            className="invalid-feedback d-block"
+                            id="fname_error"
+                          >
                             {errors.fName}
                           </div>
                         )}
@@ -203,14 +275,16 @@ export default function SignupForm() {
                         <label>Last Name</label>
                         <input
                           type="text"
-                          className={`form-control ${errors.lName ? 'is-invalid' : ''}`}
+                          className="form-control"
                           name="lName"
                           placeholder="Enter Last Name"
-                          value={formData.lName}
                           onChange={handleInputChange}
                         />
                         {errors.lName && (
-                          <div className="invalid-feedback d-block">
+                          <div
+                            className="invalid-feedback d-block"
+                            id="lname_error"
+                          >
                             {errors.lName}
                           </div>
                         )}
@@ -219,14 +293,16 @@ export default function SignupForm() {
                         <label>Email ID</label>
                         <input
                           type="email"
-                          className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                          className="form-control"
                           name="email"
                           placeholder="Enter Email Address"
-                          value={formData.email}
                           onChange={handleInputChange}
                         />
                         {errors.email && (
-                          <div className="invalid-feedback d-block">
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error"
+                          >
                             {errors.email}
                           </div>
                         )}
@@ -234,225 +310,258 @@ export default function SignupForm() {
                       <div className="col-sm-6 mb-2">
                         <label>Phone Number</label>
                         <div className="input-group">
-                          <select
-                            name="code"
-                            className={`form-select ${errors.code ? 'is-invalid' : ''}`}
-                            value={formData.code}
-                            onChange={handlePhoneCode}
-                          >
-                            <option value="">Select Code</option>
-                            {countries.map(country => (
-                              <option key={country.id} value={country.phonecode}>
-                                +{country.phonecode}
+                          
+                            <select
+                            name="phonecode"
+                            id="phonecode"
+                            className="form-select"
+                            defaultValue="Select"
+                            onChange={handlePhoneCode}  >
+                            <option value="Select" disabled>
+                              Select
+                            </option>
+                            {countries.map((option) => (
+                              <option key={option.id} value={option.id}>
+                               +{option.phonecode}
                               </option>
                             ))}
                           </select>
-                          <input
+                           <input
                             type="number"
-                            className={`form-control ms-2 ${errors.phoneNumber ? 'is-invalid' : ''}`}
+                            className="ms-2 form-control"
                             name="phoneNumber"
                             placeholder="Enter Mobile Number"
-                            value={formData.phoneNumber}
                             onChange={handleInputChange}
                           />
+
+                            {errors.code && (
+                              <div
+                                className="invalid-feedback d-block"
+                                id="code_error"
+                              >
+                                {errors.code}
+                              </div>
+                            )}
+                          
+                         
+                          {errors.phoneNumber && (
+                            <div
+                              className="invalid-feedback d-block"
+                              id="phoneNumber_error"
+                            >
+                              {errors.phoneNumber}
+                            </div>
+                          )}
                         </div>
-                        {errors.code && (
-                          <div className="invalid-feedback d-block">
-                            {errors.code}
-                          </div>
-                        )}
-                        {errors.phoneNumber && (
-                          <div className="invalid-feedback d-block">
-                            {errors.phoneNumber}
-                          </div>
-                        )}
                       </div>
-                      <div className="col-sm-12 mb-2">
-                        <label>Company Name</label>
+                      <div className="col-sm-12">
+                         <label>Company Name</label>
                         <input
                           type="text"
-                          className={`form-control ${errors.CName ? 'is-invalid' : ''}`}
+                          className="form-control"
                           name="CName"
                           placeholder="Enter Company Name"
-                          value={formData.CName}
                           onChange={handleInputChange}
                         />
                         {errors.CName && (
-                          <div className="invalid-feedback d-block">
+                          <div
+                            className="invalid-feedback d-block"
+                            id="CName_error"
+                          >
                             {errors.CName}
                           </div>
                         )}
                       </div>
-                      <div className="col-sm-6 mb-2">
-                        <div className="form-group">
-                          <label>Nature of Business</label>
+                      <div className="col-sm-6">
+                        <div className="form-group mb-1">
+                          <label htmlFor="natOfBus">
+                            Select Nature of Business
+                          </label>
                           <select
                             name="natOfBus"
-                            className={`form-select ${errors.natOfBus ? 'is-invalid' : ''}`}
-                            value={formData.natOfBus}
-                            onChange={handleInputChange}
+                            className="form-select"
+                            id="natOfBus" onChange={handleInputChange}
                           >
-                            <option value="">Select</option>
-                            <option value="79">Brand</option>
-                            <option value="81">Buyer</option>
-                            <option value="2">Buying Agent</option>
-                            <option value="80">Buying House</option>
-                            <option value="4">Exporter</option>
-                            <option value="3">Importer</option>
-                            <option value="47">Job worker</option>
-                            <option value="1">Manufacturer</option>
-                            <option value="5">Merchant Trader</option>
-                            <option value="7">Others</option>
-                            <option value="6">Processor</option>
-                            <option value="48">Retailer</option>
-                            <option value="82">Service Provider</option>
-                            <option value="46">Trader</option>
+                            <option value="Select" >
+                              Select
+                            </option>
+                            <option value="79">Brand </option>
+                            <option value="81">Buyer </option>
+                            <option value="2">Buying Agent </option>
+                            <option value="80">Buying House </option>
+                            <option value="4">Exporter </option>
+                            <option value="3">Importer </option>
+                            <option value="47">Job worker </option>
+                            <option value="1">Manufacturer </option>
+                            <option value="5">Merchant Trader </option>
+                            <option value="7">Others </option>
+                            <option value="6">Processor </option>
+                            <option value="48">Retailer </option>
+                            <option value="82">Service Provider </option>
+                            <option value="46">Trader </option>
                           </select>
                           {errors.natOfBus && (
-                            <div className="invalid-feedback d-block">
-                              {errors.natOfBus}
-                            </div>
-                          )}
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error"
+                          >
+                            {errors.natOfBus}
+                          </div>
+                        )}
                         </div>
                       </div>
-                      <div className="col-sm-6 mb-2">
-                        <div className="form-group">
-                          <label>Designation</label>
+                      <div className="col-sm-6">
+                        <div className="form-group mb-1">
+                          <label htmlFor="degination">Select Designation</label>
                           <select
                             name="degination"
-                            className={`form-select ${errors.degination ? 'is-invalid' : ''}`}
-                            value={formData.degination}
+                            className="form-select"
+                            id="designation"
                             onChange={handleInputChange}
                           >
                             <option value="">Select</option>
-                            <option value="74">AGM Marketing</option>
-                            <option value="77">Chairman</option>
-                            <option value="8">Chief Executive Officer</option>
-                            <option value="9">Chief Financial Officer</option>
-                            <option value="78">Deputy Manager</option>
-                            <option value="20">Designer</option>
-                            <option value="62">Director</option>
-                            <option value="61">Division manager</option>
-                            <option value="73">General Manager</option>
-                            <option value="18">Manager</option>
-                            <option value="16">Managing Director</option>
-                            <option value="22">Merchandiser</option>
-                            <option value="10">Officer</option>
-                            <option value="26">operational Head</option>
-                            <option value="15">Owner</option>
-                            <option value="17">Partner</option>
-                            <option value="76">President</option>
-                            <option value="60">Proprietor</option>
-                            <option value="19">Sales Executive</option>
-                            <option value="24">Sales Manager</option>
-                            <option value="21">Sourcing Manager</option>
-                            <option value="23">Sr Merchandiser</option>
-                            <option value="75">VICE PRESIDENT</option>
+                            <option value="74">AGM Marketing </option>
+                            <option value="77">Chairman </option>
+                            <option value="8">Chief Executive Officer </option>
+                            <option value="9">Chief Financial Officer </option>
+                            <option value="78">Deputy Manager </option>
+                            <option value="20">Designer </option>
+                            <option value="62">Director </option>
+                            <option value="61">Division manager </option>
+                            <option value="73">General Manager </option>
+                            <option value="18">Manager </option>
+                            <option value="16">Managing Director </option>
+                            <option value="22">Merchandiser </option>
+                            <option value="10">Officer </option>
+                            <option value="26">operational Head </option>
+                            <option value="15">Owner </option>
+                            <option value="17">Partner </option>
+                            <option value="76">President </option>
+                            <option value="60">Proprietor </option>
+                            <option value="19">Sales Executive </option>
+                            <option value="24">Sales Manager </option>
+                            <option value="21">Sourcing Manager </option>
+                            <option value="23">Sr Merchandiser </option>
+                            <option value="75">VICE PRESIDENT </option>
                           </select>
                           {errors.degination && (
-                            <div className="invalid-feedback d-block">
-                              {errors.degination}
-                            </div>
-                          )}
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error">
+                            {errors.degination}
+                          </div>
+                        )}
                         </div>
                       </div>
-                      <div className="col-sm-6 mb-2">
-                        <div className="form-group">
-                          <label>Country</label>
+                      <div className="col-sm-6">
+                        <div className="form-group mb-1">
+                          <label htmlFor="selCountires">select Countries</label>
                           <select
                             name="country"
-                            className={`form-select ${errors.country ? 'is-invalid' : ''}`}
-                            value={formData.country}
+                            id="country"
+                            className="form-select"
+                            defaultValue="Select"
                             onChange={handleCountry}
                           >
-                            <option value="">Select</option>
-                            {countries.map(country => (
-                              <option key={country.id} value={country.id}>
-                                {country.name}
+                            <option value="Select" disabled>
+                              Select
+                            </option>
+                            {countries.map((option) => (
+                              <option key={option.id} value={option.id}>
+                                {option.name}
                               </option>
                             ))}
                           </select>
                           {errors.country && (
-                            <div className="invalid-feedback d-block">
-                              {errors.country}
-                            </div>
-                          )}
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error">
+                            {errors.country}
+                          </div>
+                        )}
                         </div>
                       </div>
-                      <div className="col-sm-6 mb-2">
-                        <div className="form-group">
-                          <label>State</label>
+                      <div className="col-sm-6">
+                        <div className="form-group mb-1">
+                          <label htmlFor="selStates">select States</label>
                           <select
                             name="state"
-                            className={`form-select ${errors.state ? 'is-invalid' : ''}`}
-                            value={formData.state}
+                            id="selectState"
+                            className="form-select"
+                            defaultValue="Select"
                             onChange={handleStates}
+                            
                           >
-                            <option value="">Select</option>
-                            {states.map(state => (
-                              <option key={state.id} value={state.id}>
-                                {state.name}
+                            <option value="Select">
+                              Select
+                            </option>
+                            {states.map((option) => (
+                              <option key={option.id} value={option.id}>
+                                {option.name}
                               </option>
                             ))}
                           </select>
                           {errors.state && (
-                            <div className="invalid-feedback d-block">
-                              {errors.state}
-                            </div>
-                          )}
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error">
+                            {errors.state}
+                          </div>
+                        )}
                         </div>
                       </div>
                       <div className="col-sm-6 mb-2">
-                        <div className="form-group">
-                          <label>City</label>
-                          <select
-                            name="city"
-                            className={`form-select ${errors.city ? 'is-invalid' : ''}`}
-                            value={formData.city}
-                            onChange={handleCity}
-                          >
-                            <option value="">Select</option>
-                            {cities.map(city => (
-                              <option key={city.id} value={city.id}>
-                                {city.name}
-                              </option>
-                            ))}
-                          </select>
-                          {errors.city && (
-                            <div className="invalid-feedback d-block">
-                              {errors.city}
-                            </div>
-                          )}
-                        </div>
+                        <label>Select City</label>
+                        <select
+                          className="form-select"
+                          name="city"
+                          onChange={handleCity}
+                        >
+                          <option value="">Select</option>
+                          {cities.map((option) => (
+                            <option key={option.id} value={option.id}>
+                              {option.name}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.city && (
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error">
+                            {errors.city}
+                          </div>
+                        )}
                       </div>
                       <div className="col-sm-6 mb-2">
                         <label>ZipCode</label>
                         <input
                           type="number"
-                          className={`form-control ${errors.zipCode ? 'is-invalid' : ''}`}
-                          name="zipCode"
+                          className="form-control"
+                          name="zipcode"
                           placeholder="Enter ZipCode"
-                          value={formData.zipCode}
                           onChange={handleInputChange}
                         />
-                        {errors.zipCode && (
-                          <div className="invalid-feedback d-block">
-                            {errors.zipCode}
+                         {errors.zipcode && (
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error">
+                            {errors.zipcode}
                           </div>
                         )}
                       </div>
                       <div className="col-sm-6 mb-2">
-                        <label>Password</label>
+                        <label>Enter Password</label>
                         <input
                           type="password"
-                          className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                          className="form-control"
                           name="password"
                           placeholder="Enter Password"
-                          value={formData.password}
                           onChange={handleInputChange}
                         />
-                        {errors.password && (
-                          <div className="invalid-feedback d-block">
+                         {errors.password && (
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error">
                             {errors.password}
                           </div>
                         )}
@@ -461,14 +570,15 @@ export default function SignupForm() {
                         <label>Confirm Password</label>
                         <input
                           type="password"
-                          className={`form-control ${errors.password_confirm ? 'is-invalid' : ''}`}
+                          className="form-control"
                           name="password_confirm"
                           placeholder="Confirm Password"
-                          value={formData.password_confirm}
                           onChange={handleInputChange}
                         />
-                        {errors.password_confirm && (
-                          <div className="invalid-feedback d-block">
+                         {errors.password_confirm && (
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error">
                             {errors.password_confirm}
                           </div>
                         )}
@@ -479,12 +589,10 @@ export default function SignupForm() {
                             className="form-check-input"
                             type="radio"
                             name="memType"
-                            id="freeMembership"
                             value="Free"
-                            checked={formData.memType === "Free"}
                             onChange={handleInputChange}
                           />
-                          <label className="form-check-label" htmlFor="freeMembership">
+                          <label className="form-check-label">
                             Trial Membership
                           </label>
                         </div>
@@ -493,17 +601,17 @@ export default function SignupForm() {
                             className="form-check-input"
                             type="radio"
                             name="memType"
-                            id="paidMembership"
                             value="Paid"
-                            checked={formData.memType === "Paid"}
                             onChange={handleInputChange}
                           />
-                          <label className="form-check-label" htmlFor="paidMembership">
+                          <label className="form-check-label">
                             Paid Membership
                           </label>
                         </div>
                         {errors.memType && (
-                          <div className="invalid-feedback d-block">
+                          <div
+                            className="invalid-feedback d-block"
+                            id="email_error">
                             {errors.memType}
                           </div>
                         )}
@@ -511,32 +619,44 @@ export default function SignupForm() {
                       <div className="col-sm-12 mb-2">
                         <div className="form-check">
                           <input
-                            className={`form-check-input ${errors.agree ? 'is-invalid' : ''}`}
+                            className="form-check-input"
                             type="checkbox"
                             name="agree"
-                            id="agreeTerms"
-                            checked={formData.agree}
+                            defaultChecked
+                            required
                             onChange={handleInputChange}
                           />
-                          <label className="form-check-label" htmlFor="agreeTerms">
-                            By logging in, I agree to SOWTEX{' '}
-                            <a href="https://sowtex.com/terms-conditions" className="mx-1">
+                          <p
+                            className="modal-footer px-0 pt-0 justify-content-start"
+                            style={{
+                              fontSize: "13px",
+                              fontWeight: "600",
+                              color: "#000000ba",
+                            }}
+                          >
+                            By logging in, I agree to SOWTEX
+                            <a
+                              href="https://sowtex.com/terms-conditions"
+                              className="mx-1"
+                            >
                               terms of use
-                            </a>{' '}
-                            and{' '}
-                            <a href="https://sowtex.com/privacy-policy" className="mx-1">
+                            </a>{" "}
+                            and
+                            <a
+                              href="https://sowtex.com/privacy-policy"
+                              className="mx-1"
+                            >
                               privacy policy
                             </a>
-                          </label>
+                          </p>
                         </div>
-                        {errors.agree && (
-                          <div className="invalid-feedback d-block">
-                            {errors.agree}
-                          </div>
-                        )}
                       </div>
                       <div className="col-sm-12">
-                        <button type="submit" className="btn btn-primary px-4 py-2">
+                        <button
+                        onClick={handleSubmit}
+                          type="submit"
+                          className="btn btn-primary px-4 py-2"
+                        >
                           Submit
                         </button>
                       </div>
@@ -556,24 +676,24 @@ export default function SignupForm() {
           font-size: 10px;
           margin-bottom: 10px;
         }
+
         #register {
           margin-top: 65px !important;
         }
+
         .register-form .form-check {
           padding-left: 20px;
         }
+
         .form-check-inline-flex {
           display: flex;
           flex-wrap: wrap;
         }
-        .is-invalid {
-          border-color: #dc3545;
-        }
-        .invalid-feedback {
-          color: #dc3545;
-          font-size: 0.875em;
-        }
       `}</style>
     </>
   );
-}
+};
+// const SignupForm = () => {
+//   return <div>Signup Form</div>;
+// };
+export default SignupForm;
