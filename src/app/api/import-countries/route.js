@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connectToDatabase from "../../../lib/dbConnect";
+import connectToDatabase from "../../lib/dbConnect";
 import Country from "../../Models/Country";
 import State from "../../Models/State";
 import path from 'path';

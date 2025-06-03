@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Adminmenu from "../../components/adminMemu";
-import Swal from 'sweetalert2/dist/sweetalert2.esm.all.js';
+import Adminmenu from "../components/AdminMenu";
+// import Swal from 'sweetalert2/dist/sweetalert2.esm.all.js';
 export default function preRegistration() {
   return (
     <>

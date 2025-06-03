@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Adminmenu from "../../components/adminMemu";
+import Adminmenu from "../components/AdminMenu";
 
 export default function ManageProducts() {
   const [products, setProducts] = useState("");
