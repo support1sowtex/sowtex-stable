@@ -56,24 +56,25 @@ export default function TeamSlider() {
               >
                 <div className="col-12 col-md-3 me-lg-3  px-lg-2 px-5 py-lg-3 ">
                   <Image
-                    style={{ height: "200px", width: "100%" }}
-                    src="https://sowtex.com/assets/images/sowtex/vision.jpeg "
-                  />
+                  style={{ height: "200px", width: "100%" }}
+                  src="https://sowtex.com/assets/images/sowtex/vision.jpeg"
+                  alt="Vision of Sowtex"
+                />
                 </div>
                 <div className="col-md-8">
                   <div className="my-2 m-0">
                     <h1 className="w-100 text-lg-start text-center">Vision</h1>
                   </div>
                   <p className="pe-3 px-2" style={{ fontSize: "14px" }}>
-                    By 2030, Sowtex envisions becoming the linchpin of India’s
+                    By 2030, Sowtex envisions becoming the linchpin of Indias
                     Textile evolution, seamlessly integrating advanced digital
                     technologies with traditional textile practices to transform
                     India into a global textile powerhouse. Our goal is to drive
                     efficiency, elevate global competitiveness, and foster
                     sustainable growth by leveraging cutting-edge technology and
-                    forging strategic partnerships. We aspire to enhance India’s
+                    forging strategic partnerships. We aspire to enhance Indias
                     position as a self-reliant textile leader, contributing
-                    significantly to the nation's vision of a $350 billion
+                    significantly to the nations vision of a $350 billion
                     textile industry and $100 billion in global exports.
                   </p>
                 </div>
@@ -99,10 +100,10 @@ export default function TeamSlider() {
                     amplifies international connections, and fosters sustainable
                     development. We are committed to driving innovation through
                     BI and AI solutions, expanding global trade opportunities,
-                    and creating a robust ecosystem that supports India’s
+                    and creating a robust ecosystem that supports Indias
                     textile goals. By advancing technology, promoting
                     high-quality standards, and nurturing talent, Sowtex aims to
-                    bolster India’s global textile leadership and support its
+                    bolster Indias global textile leadership and support its
                     ambition of a thriving, self-sufficient textile sector by
                     2030.
                   </p>

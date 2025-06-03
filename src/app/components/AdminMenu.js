@@ -7,6 +7,7 @@ import { useState } from "react";
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import menuItems from "./MenuArray";
+import Image from 'next/image';
 export default function AdminMenu() {
   const toggleSection = (title) => {
     setOpenSections((prev) => ({
@@ -65,7 +66,7 @@ export default function AdminMenu() {
             <div className="row pb-2">
               <div className="col-md-2">
                 <a href="https://sowtex.com/">
-                  <img
+                  <Image
                     src="https://sowtex.com/assets/admin/images/logo-sowtex.png"
                     alt=""
                     className="img-fluid logo"
@@ -124,7 +125,7 @@ export default function AdminMenu() {
       </header>
       <div className="sidebar" style={{ width: sidebarWidth }} id="mySidebar">
         <a href="https://sowtex.com/">
-          <img
+          <Image
             src="https://sowtex.com/assets/admin/images/logo.png"
             alt="Logo"
             style={{ height: 50, width: "auto" }}

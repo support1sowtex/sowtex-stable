@@ -111,15 +111,15 @@ const RegistrationForm = () => {
                     </div>
 
                     <p style={{ fontSize: 12 }} className="text-center text-muted px-2">
-                      By logging in, I agree to SOWTEX{' '}
+                      By logging in I agree to SOWTEX
                       <a
                         href="http://localhost/sowtex3.0/terms-conditions"
                         className="text-decoration-none fw-semibold"
                         style={{ color: '#08062c' }}
                       >
                         terms &amp; conditions
-                      </a>{' '}
-                      and{' '}
+                      </a>
+                      and
                       <a
                         href="http://localhost/sowtex3.0/privacy-policy"
                         className="text-decoration-none fw-semibold"
