@@ -10,6 +10,7 @@ import Layout from "../components/Menu";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Menu from "../components/Menu";
 import Footer from "../components/Footer";
+import Image from 'next/image';
 
 export default function TeamSlider() {
   const teamMembers = [
@@ -54,7 +55,7 @@ export default function TeamSlider() {
                 className="row  g-0 "
               >
                 <div className="col-12 col-md-3 me-lg-3  px-lg-2 px-5 py-lg-3 ">
-                  <img
+                  <Image
                     style={{ height: "200px", width: "100%" }}
                     src="https://sowtex.com/assets/images/sowtex/vision.jpeg "
                   />
@@ -82,7 +83,7 @@ export default function TeamSlider() {
             <div className="col-md-12 mt-2 ">
               <div style={{ border: "1px solid #e2dada" }} className="row  g-0">
                 <div className="col-md-3 me-lg-3  px-lg-2 px-5 px-2  py-lg-3 ">
-                  <img
+                  <Image
                     style={{ height: "200px", width: "100%" }}
                     src="https://sowtex.com/assets/images/sowtex/MISSION_2.jpeg "
                   />
@@ -114,23 +115,23 @@ export default function TeamSlider() {
 
             <div className="row d-flex justify-content-center text-center about-section-icon">
               <div className="col-4 col-md-4 col-lg-2">
-                <img src="https://sowtex.com/assets/images/sowtex/Speed_Innovation.png" />
+                <Image src="https://sowtex.com/assets/images/sowtex/Speed_Innovation.png" />
                 <p>Speed &amp; Innovation</p>
               </div>
               <div className="col-4 col-md-4 col-lg-2">
-                <img src="https://sowtex.com/assets/images/sowtex/Customer Centric Solutions.png" />
+                <Image src="https://sowtex.com/assets/images/sowtex/Customer Centric Solutions.png" />
                 <p>Customer Centric Solutions</p>
               </div>
               <div className="col-4 col-md-4 col-lg-2">
-                <img src="https://sowtex.com/assets/images/sowtex/Focus on Deals _ Business Growth.png " />
+                <Image src="https://sowtex.com/assets/images/sowtex/Focus on Deals _ Business Growth.png " />
                 <p>Focus on Deals &amp; Business Growth</p>
               </div>
               <div className="col-4 col-md-4 col-lg-2">
-                <img src="https://sowtex.com/assets/images/sowtex/Empowered Businesses.png" />
+                <Image src="https://sowtex.com/assets/images/sowtex/Empowered Businesses.png" />
                 <p>Empowered Businesses</p>
               </div>
               <div className="col-4 col-md-4 col-lg-2">
-                <img src="https://sowtex.com/assets/images/sowtex/Industry Collaboration.png " />
+                <Image src="https://sowtex.com/assets/images/sowtex/Industry Collaboration.png " />
                 <p>Industry Collaboration</p>
               </div>
             </div>
@@ -157,7 +158,7 @@ export default function TeamSlider() {
           {teamMembers.map((member, index) => (
             <SwiperSlide key={index}>
               <div className="profile-card text-center p-3">
-                <img
+                <Image
                   src={member.image}
                   alt={member.name}
                   className="img-fluid rounded-circle mb-3"

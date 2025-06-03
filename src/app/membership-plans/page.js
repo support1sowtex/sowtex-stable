@@ -3,6 +3,7 @@ import { useState } from "react";
 import Layout from "../components/Menu";
 import axios from "axios";
 import Link from "next/link";
+import Image from 'next/image';
 import Breadcrumb from "../components/Breadcrumb";
 // import Breadcrumbs from "../../components/BreadCrumb";
 
@@ -47,7 +48,7 @@ export default function MembershipPlans() {
                             borderBottom: 0,
                           }}
                         >
-                          <img
+                          <Image
                             src="/assets/img/memb_start.png"
                             width="140"
                             alt="Quarterly Plan"
@@ -64,7 +65,7 @@ export default function MembershipPlans() {
                             borderBottom: 0,
                           }}
                         >
-                          <img
+                          <Image
                             src="/assets/img/Membership_Plan_Banners.png"
                             width="140"
                             alt="Annual Plan"
@@ -79,7 +80,7 @@ export default function MembershipPlans() {
                             border: "0",
                           }}
                         >
-                          <img
+                          <Image
                             src="/assets/img/professional_banner.png"
                             width="140"
                             alt="Professional Plan"
@@ -94,7 +95,7 @@ export default function MembershipPlans() {
                             border: "0",
                           }}
                         >
-                          <img
+                          <Image
                             src="/assets/img/enterpirse.png"
                             width="140"
                             alt="Enterprise Plan"

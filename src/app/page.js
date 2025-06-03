@@ -34,7 +34,7 @@ function HomePage() {
       <div className="container-fluid" style={{display:'flex',textAlign:'center',justifyContent:'space-around',width:'60%' }}>
           <div className="source-global-box ">
             <div className="source-global-box-img">
-              <img
+              <Image
                 src="https://sowtex.com/assets/front/img/Source Global Suppliers/Design _ Products.png"
                 alt="Design & Products"
               />
@@ -50,7 +50,7 @@ function HomePage() {
           </div>
           <div className="source-global-box">
             <div className="source-global-box-img">
-              <img
+              <Image
                 src="https://sowtex.com/assets/front/img/Source Global Suppliers/Ready Stocks.png"
                 alt="Ready Stocks"
               />
@@ -67,7 +67,7 @@ function HomePage() {
           </div>
           <div className="source-global-box">
             <div className="source-global-box-img">
-              <img
+              <Image
                 src="https://sowtex.com/assets/front/img/Source Global Suppliers/Reviews _ Ratings.png"
                 alt="Vendor Portfolios"
               />
@@ -84,7 +84,7 @@ function HomePage() {
           </div>
           <div className="source-global-box">
             <div className="source-global-box-img">
-              <img
+              <Image
                 src="https://sowtex.com/assets/front/img/Source Global Suppliers/Vendor Portfolios.png"
                 alt="Reviews & Ratings"
               />
@@ -137,7 +137,7 @@ function HomePage() {
                     className="btn btn-primary btn-img px-3 py-2 mb-3"
                   >
                     Know More
-                    <img
+                    <Image
                       src="https://sowtex.com/assets/img/btn-arrow.png"
                       alt="button"
                     />
@@ -152,7 +152,7 @@ function HomePage() {
                   <div className="container flr-sm">
                     <div className="flx flx-4">
                       <div className="list-column d-flex p-0">
-                        <img
+                        <Image
                           src="https://sowtex.com/assets/front/img/Speed%20%20Innovation.png"
                           alt="icon"
                         />
@@ -161,7 +161,7 @@ function HomePage() {
                     </div>
                     <div className="flx flx-4">
                       <div className="list-column d-flex p-0">
-                        <img
+                        <Image
                           src="https://sowtex.com/assets/front/img/Customer Centric Solutions_1.png"
                           alt="icon"
                         />
@@ -170,7 +170,7 @@ function HomePage() {
                     </div>
                     <div className="flx flx-4">
                       <div className="list-column d-flex p-0">
-                        <img
+                        <Image
                           src="https://sowtex.com/assets/front/img/Focus on Deals Business Growth.png"
                           alt="icon"
                         />
@@ -179,7 +179,7 @@ function HomePage() {
                     </div>
                     <div className="flx flx-4">
                       <div className="list-column d-flex p-0">
-                        <img
+                        <Image
                           src="https://sowtex.com/assets/front/img/Empowered Businesses_1.png"
                           alt="icon"
                         />
@@ -188,7 +188,7 @@ function HomePage() {
                     </div>
                     <div className="flx flx-4">
                       <div className="list-column d-flex p-0">
-                        <img
+                        <Image
                           src="https://sowtex.com/assets/front/img/Industry Collaboration_1.png"
                           alt="icon"
                         />

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useState } from "react";
+import Image from 'next/image';
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 // console.log(baseUrl)
 import Script from 'next/script';
@@ -46,7 +47,7 @@ const Menu = () => {
           <div className="logo">
          
             <Link href="/">
-              <img
+              <Image
                 src="/assets/front/img/logo.png"
                 alt="logo"
                 width={120}
@@ -374,7 +375,7 @@ const Menu = () => {
                         </div>
                         <div className="all_cat_list_item">
                           <div className="all_cat_list_item_content">
-                            <img
+                            <Image
                               src="https://sowtex.com/assets/images/stockbanner/1737016430CATEGORIES.png"
                               className="mr-auto"
                               alt="content"
@@ -536,7 +537,7 @@ const Menu = () => {
                         </div>
                         <div className="all_cat_list_item">
                           <div className="all_cat_list_item_content">
-                            <img
+                            <Image
                               style={{ height: "150px" }}
                               src="../assets/images/stockbanner/top1737016420Stocks.png"
                               className="mr-auto"
@@ -596,7 +597,7 @@ const Menu = () => {
                   display-inline"
                     >
                       For Better Experince{" "}
-                      <img
+                      <Image
                         className="col-3 col-sm-2"
                         src="/assets/front/img/google.svg"
                         alt="Play-store"

@@ -74,7 +74,7 @@ const RegistrationForm = () => {
                 <div className="row g-0 border-0 rounded-4 shadow-lg">
 
                   <div className="col-md-6 p-0 form-img order-2 order-lg-1">
-                    <img
+                    <Image
                       style={{ height: '100%', width: '100%', objectFit: 'cover' }}
                       src="http://localhost/sowtex3.0/assets/front/img/login_thumb3.png"
                       alt="Login Image"
@@ -148,7 +148,7 @@ const RegistrationForm = () => {
                     <form>
                       <label className="mb-2">Enter your registered Mobile Number</label>
                       <input type="text" className="form-control py-2" placeholder="Enter Your Registered Mobile no" />
-                      <small className="form-text text-muted">We'll send you an OTP on your Whatsapp.</small>
+                      <small className="form-text text-muted">Well send you an OTP on your Whatsapp.</small>
                     </form>
                     <div className="text-danger small mt-1">{/* Error placeholder */}</div>
                   </div>

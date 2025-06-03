@@ -164,7 +164,7 @@ const RegistrationForm = () => {
                   <div className="row p-2 mb-3" style={{ border: '1px solid #dfd6d6' }}>
                     <div className="col-3">
                       <div className="text-center">
-                        <img 
+                        <Image 
                           src="https://sowtex.com/assets/images/sowtex/placeholder.png" 
                           alt="General contact" 
                           className="img-fluid"
@@ -190,7 +190,7 @@ const RegistrationForm = () => {
                   <div className="row p-2 mb-3" style={{ border: '1px solid #dfd6d6' }}>
                     <div className="col-3">
                       <div className="text-center">
-                        <img 
+                        <Image 
                           src="https://sowtex.com/assets/images/sowtex/telephone-call.png" 
                           alt="Sales contact" 
                           className="img-fluid"
@@ -207,7 +207,7 @@ const RegistrationForm = () => {
                   <div className="row p-2 mb-3" style={{ border: '1px solid #dfd6d6' }}>
                     <div className="col-3">
                       <div className="text-center">
-                        <img 
+                        <Image 
                           src="https://sowtex.com/assets/images/sowtex/user.png" 
                           alt="Support contact" 
                           className="img-fluid"
@@ -353,7 +353,7 @@ const RegistrationForm = () => {
                         </div>
                         
                         <div className="form-field">
-                          <img 
+                          <Image 
                             src="https://sowtex.com/assets/images/captcha/202a1a.jpeg" 
                             id="capt" 
                             className="me-3" 

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 const MultiSelect = dynamic(
   () => import('../../components/MultiSelect'),
   { ssr: false }
@@ -361,7 +362,7 @@ export default function Sidebar() {
   return (
     <>
       <div className="onload-div">
-        <img
+        <Image
           src="https://sowtex.com/assets/admin/images/waiting-image.gif"
           alt=""
         />
@@ -722,7 +723,7 @@ export default function Sidebar() {
                             key={index}
                             style={{ position: "relative", margin: "5px" }}
                           >
-                            <img
+                            <Image
                               alt={`Preview ${index}`}
                               src={src}
                               style={{ width: "100px", height: "100px" }}

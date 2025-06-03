@@ -6,6 +6,7 @@ import AdminMenu from "../../../components/AdminMenu";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import Script from 'next/script';
+import Image from 'next/image';
 export default function ManageProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -76,7 +77,7 @@ export default function ManageProducts() {
                   <section id="default" className="padding-top0">
                      <div className="row">
                      <Zoom>
-                     <img
+                     <Image
                         alt="That Wanaka Tree, New Zealand by Laura Smetsers"
                         src="https://sowtex.com/assets/images/Product/S38SD003141283.jpeg"
                         width="500"
@@ -139,7 +140,7 @@ export default function ManageProducts() {
                <div className="col-sm-3">
                   <div className="category-brief bg-light py-3">
                      <div className="category-image px-2">
-                        <img src="https://sowtex.com/assets/images/logos/173376900087036.jpg" alt="" className="img-fluid w-100 img-thumbnail" />
+                        <Image src="https://sowtex.com/assets/images/logos/173376900087036.jpg" alt="" className="img-fluid w-100 img-thumbnail" />
                      </div>
 
                      

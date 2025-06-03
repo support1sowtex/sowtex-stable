@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import { useState, useEffect } from "react";
 import Breadcrumbs from "../components/Breadcrumb";
 import axios from "axios";
+import Image from 'next/image';
 import {
   Container,
   TextField,
@@ -231,7 +232,7 @@ const SignupForm = () => {
           <div className="register container">
             <div className="row g-2">
               <div className="col-sm-4">
-                <img
+                <Image
                   src="https://sowtex.com/assets/images/sowtex/registration_chnage_new.png"
                   alt="Register"
                   style={{ minHeight: "619px" }}
