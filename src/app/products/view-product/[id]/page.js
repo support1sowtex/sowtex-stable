@@ -140,7 +140,7 @@ export default function ManageProducts() {
                <div className="col-sm-3">
                   <div className="category-brief bg-light py-3">
                      <div className="category-image px-2">
-                        <Image src="https://sowtex.com/assets/images/logos/173376900087036.jpg" alt="" className="img-fluid w-100 img-thumbnail" />
+                        <img src="https://sowtex.com/assets/images/logos/173376900087036.jpg" alt="" className="img-fluid w-100 img-thumbnail" />
                      </div>
 
                      

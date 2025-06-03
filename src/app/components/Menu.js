@@ -375,11 +375,12 @@ const Menu = () => {
                         </div>
                         <div className="all_cat_list_item">
                           <div className="all_cat_list_item_content">
-                            <Image
+                            {/* <Image
                               src="https://sowtex.com/assets/images/stockbanner/1737016430CATEGORIES.png"
                               className="mr-auto"
-                              alt="content"
-                            />
+                              alt="content" width={300}
+  height={200}
+                            /> */}
                           </div>
                         </div>
                       </div>
@@ -537,12 +538,12 @@ const Menu = () => {
                         </div>
                         <div className="all_cat_list_item">
                           <div className="all_cat_list_item_content">
-                            <Image
+                            {/* <Image
                               style={{ height: "150px" }}
                               src="../assets/images/stockbanner/top1737016420Stocks.png"
                               className="mr-auto"
                               alt="banner"
-                            />
+                            /> */}
                           </div>
                         </div>
                       </div>
@@ -597,11 +598,11 @@ const Menu = () => {
                   display-inline"
                     >
                       For Better Experince{" "}
-                      <Image
+                      {/* <Image
                         className="col-3 col-sm-2"
-                        src="/assets/front/img/google.svg"
+                        src="https:sowtex.com/assets/front/img/img/google.svg"
                         alt="Play-store"
-                      />
+                      /> */}
                     </a>
                   </li>
                   <li>

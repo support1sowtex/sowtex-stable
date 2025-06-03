@@ -66,7 +66,7 @@ export default function AdminMenu() {
             <div className="row pb-2">
               <div className="col-md-2">
                 <a href="https://sowtex.com/">
-                  <Image
+                  <img
                     src="https://sowtex.com/assets/admin/images/logo-sowtex.png"
                     alt=""
                     className="img-fluid logo"
@@ -125,7 +125,7 @@ export default function AdminMenu() {
       </header>
       <div className="sidebar" style={{ width: sidebarWidth }} id="mySidebar">
         <a href="https://sowtex.com/">
-          <Image
+          <img
             src="https://sowtex.com/assets/admin/images/logo.png"
             alt="Logo"
             style={{ height: 50, width: "auto" }}

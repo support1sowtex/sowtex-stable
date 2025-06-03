@@ -46,7 +46,7 @@ export default function Login() {
           icon: 'success',
           confirmButtonText: 'Cool'
         });
-        // router.push('/dashboard');
+        router.push('/dashboard');
         // alert("Login Successful");
         // Optionally redirect or reload
       } else {
