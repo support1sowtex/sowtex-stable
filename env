@@ -1,9 +1,0 @@
-
-
-MONGODB_URI="mongodb+srv://negikaithal:negikaithal@cluster0.nwd4f.mongodb.net"
-DB_HOST='localhost'
-DB_USER='root'
-DB_PASSWORD=''
-DB_NAME='sowtexnet'
-NEXT_PUBLIC_BASE_URL=http://localhost:3000/connection
-DATABASE_URL="mysql://root@localhost:3306/sowtexnet"
