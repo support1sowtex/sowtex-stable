@@ -130,7 +130,7 @@ export default function DashboardPage() {
           src="https://sowtex.com/assets/admin/images/waiting-image.gif"
           alt=""
         />
-      </div>sdsd
+      </div>
       <Adminmenu></Adminmenu>
       <div id="main" style={{ marginLeft: "220px" }}>
         
