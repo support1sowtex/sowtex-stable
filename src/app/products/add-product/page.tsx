@@ -362,7 +362,7 @@ export default function Sidebar() {
   return (
     <>
       <div className="onload-div">
-        <Image
+        <img
           src="https://sowtex.com/assets/admin/images/waiting-image.gif"
           alt=""
         />

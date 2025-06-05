@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
@@ -22,7 +21,7 @@ const AdminMenu = dynamic(() => import("../components/AdminMenu"), {
 export default function Sidebar() {
   const router = useRouter();
   const [countries, setCountries] = useState([]);
-  const [optionSelected, setSelected] = useState<Option[] | null>();
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loadingStates, setLoadingStates] = useState(false);
   const [states, setStates] = useState([]);
   const getCountries = async () => {
@@ -38,6 +37,23 @@ export default function Sidebar() {
       console.log(error);
     }
   };
+  const [formData, setFormData] = useState({
+    country: "",
+    state: "",
+    city: "",
+    FName: "",
+    LName: "",
+    email: "",
+    colors: [],
+    code: "",
+    mobile: "",
+    password: "",
+    designation: "",
+    role: "",
+    category: [],
+    address: "",
+    comment: "",
+  });
   const handleCountry = async (e) => {
     const selectedCountry = e.target.value;
 
@@ -65,172 +81,59 @@ export default function Sidebar() {
       console.error("Failed to fetch states:", error);
     }
   };
-  interface FormDataType {
-    FName: string;
-    LName: string;
-    email: string;
-    code: string;
-    mobile: string;
-    password: string;
-    designation: string;
-   
-    role: string;
-    category: number[]; // or string if you reverted to string
-    country: string;
-    state: string;
-    address: string;
-    comment: string;
-  }
-  interface FormErrors {
-  FName: string;
-  LName: string;
-  email: string;
-  code: string;
-  mobile: string;
-  password: string;
-  designation: string;
-  role: string;
-  category: number[];
-  country: string;
-  state: string;
-  address: string;
-  comment: string;
-}
 
-  const [formData, setFormData] = useState<FormDataType>({
-    FName: "",
-    LName: "",
-    email: "",
-    code: "",
-    mobile: "",
-    password: "",
-    designation: "",
-    role: "",
-    category:[],
-    country: "",
-    state: "",
-    address: "",
-    comment: "",
-  });
-
-const [errors, setErrors] = useState<FormErrors>({
-  FName: "",
-  LName: "",
-  email: "",
-  code: "",
-  mobile: "",
-  password: "",
-  designation: "",
-  role: "",
-  category: [],
-  country: "",
-  state: "",
-  address: "",
-  comment: "",
-});
-
- type Option = {
-  value: number;
-  label: string;
-};
-
-const options: Option[] = [
-  { value: 0, label: "Red" },
-  { value: 1, label: "Green" },
-  { value: 2, label: "Blue" },
-  { value: 3, label: "Orange" },
-  { value: 4, label: "Yellow" },
-  { value: 5, label: "Pink" },
-];
-
-const handleChangeCategory = (selected: Option[]) => {
-  setSelected(selected);
-
-  const selectedValues: number[] = selected.map((opt) => opt.value);
-
-  setFormData((prev) => ({
-    ...prev,
-    category: selectedValues,
-  }));
-
-  if (selectedValues.length > 0) {
-    setErrors((prev) => ({
-      ...prev,
-      category: [],
-    }));
-  }
-
-  console.log("Selected options:", selected);
-};
-
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Clear error when user starts typing
-    if (name === "FName" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, FName: "" }));
-    }
-    if (name === "LName" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, LName: "" }));
-    }
-    if (name === "email" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, email: "" }));
-    }
-    if (name === "code" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, code: "" }));
-    }
-    if (name === "mobile" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, mobile: "" }));
-    }
-    if (name === "password" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, password: "" }));
-    }
-    if (name === "designation" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, designation: "" }));
-    }
-    // if (name === "category" && value.trim() !== "") {
-    //   setErrors((prev) => ({ ...prev, category: "" }));
-    // }
-    if (name === "role" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, role: "" }));
-    }
-    if (name === "country" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, country: "" }));
-    }
-    if (name === "state" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, state: "" }));
-    }
-    if (name === "address" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, address: "" }));
-    }
-    if (name === "comment" && value.trim() !== "") {
-      setErrors((prev) => ({ ...prev, comment: "" }));
-    }
+  type Option = {
+    value: string;
+    label: string;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = {
-       FName: "",
-  LName: "",
-  email: "",
-  code: "",
-  mobile: "",
-  password: "",
-  designation: "",
-  role: "",
-  category: [],
-  country: "",
-  state: "",
-  address: "",
-  comment: "",
-    };
+  const options = [
+    { value: 0, label: "Red" },
+    { value: 1, label: "Green" },
+    { value: 2, label: "Blue" },
+    { value: 3, label: "Orange" },
+    { value: 4, label: "Yellow" },
+    { value: 5, label: "Pink" },
+  ];
 
+  const [optionSelected, setSelected] = useState<Option[] | null>();
+  const handleChange1 = (selected: Option[]) => {
+    setSelected(selected); // This updates the dropdown UI
+    const selectedValues = selected.map((opt) => opt.value); // Extract only the values
+
+    // Store selected values into formData.category
+    setFormData((prev) => ({
+      ...prev,
+      category: selectedValues, // Save as string[]
+    }));
+
+    // Clear validation error if at least one category is selected
+    if (selectedValues.length > 0) {
+      setErrors((prev) => ({
+        ...prev,
+        category: "",
+      }));
+    }
+
+    // console.log("Selected categories:", selectedValues);
+  };
+  const [colorOptions, setColorOptions] = useState([]);
+  const loadColorOptions = async () => {
+    const mockColors = ["Red", "Blue", "Green", "Black", "White"];
+    setColorOptions(mockColors);
+  };
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      colors: colorOptions,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    setErrors(newErrors);
     // Validate each field individually
     if (!formData.FName || formData.FName.trim() === "") {
       newErrors.FName = "First Name is required";
@@ -258,12 +161,11 @@ const handleChangeCategory = (selected: Option[]) => {
     if (!formData.role || formData.role.trim() === "") {
       newErrors.role = "Select Role";
     }
-    // if (
-    //   !formData.category ||
-    //   (Array.isArray(formData.category) && formData.category.length === 0)
-    // ) {
-    //   newErrors.category = "Select Category";
-    // }
+    // console.log(optionSelected);
+    if (optionSelected?.length === 0) {
+      // console.log("not selected");
+      newErrors.category = "Select Category";
+    }
     if (!formData.country || formData.country.trim() === "") {
       newErrors.country = "Select Country";
     }
@@ -278,23 +180,15 @@ const handleChangeCategory = (selected: Option[]) => {
       newErrors.comment = "Comment Required";
     }
 
-    // If any error exists, set them all at once
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-      // Focus on the first invalid field
-      const firstInvalidField = Object.keys(newErrors)[0];
-      const fieldElement = document.querySelector(
-        `[name="${firstInvalidField}"]`
-      );
-     
+    if (!validateForm()) return;
+    console.log("all data is valid");
 
-      return;
-    }
-
-    // No errors – proceed with submit
-    setErrors(null);
-    console.log(formData);
     // Submit form data
   };
   useEffect(() => {
@@ -390,7 +284,7 @@ const handleChangeCategory = (selected: Option[]) => {
 
           <section className="content card">
             <div className="page-body d-container card-body admin-product-body">
-              <form onSubmit={handleSubmit} >
+              <form onSubmit={handleSubmit}>
                 <div className="row" id="upgrade_row">
                   <div className="col-sm-6 mb-3">
                     <label>First Name*</label>
@@ -402,7 +296,7 @@ const handleChangeCategory = (selected: Option[]) => {
                         errors.FName ? "is-invalid" : ""
                       }`}
                       value={formData.FName}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                     />
                     {errors.FName && (
                       <div
@@ -423,7 +317,7 @@ const handleChangeCategory = (selected: Option[]) => {
                         errors.LName ? "is-invalid" : ""
                       }`}
                       value={formData.LName}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                     />
                     {errors.LName && (
                       <div
@@ -445,7 +339,7 @@ const handleChangeCategory = (selected: Option[]) => {
                         errors.email ? "is-invalid" : ""
                       }`}
                       value={formData.email}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                     />
                     {errors.email && (
                       <div
@@ -463,20 +357,20 @@ const handleChangeCategory = (selected: Option[]) => {
                         <select
                           name="code"
                           id="code"
-                          className="form-select"
+                          className={`form-control ${
+                            errors.email ? "is-invalid" : ""
+                          }`}
                           style={{ maxWidth: "120px" }}
                           value={formData.code}
-                          onChange={handleChange}
+                          onChange={handleInputChange}
                         >
-                          <option selected value="">
-                            Select
-                          </option>
+                          <option value="">Select</option>{" "}
+                          {/* Remove 'selected' */}
                           {countries.map((option) => (
                             <option key={option.id} value={option.id}>
                               +{option.id}
                             </option>
                           ))}
-                          {/* Other country codes... */}
                         </select>
                         {errors.code && (
                           <div
@@ -497,7 +391,7 @@ const handleChangeCategory = (selected: Option[]) => {
                             errors.mobile ? "is-invalid" : ""
                           }`}
                           value={formData.mobile}
-                          onChange={handleChange}
+                          onChange={handleInputChange}
                         />
                         {errors.mobile && (
                           <div
@@ -521,7 +415,7 @@ const handleChangeCategory = (selected: Option[]) => {
                         errors.email ? "is-invalid" : ""
                       }`}
                       value={formData.password}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                     />
                     {errors.password && (
                       <div
@@ -543,7 +437,7 @@ const handleChangeCategory = (selected: Option[]) => {
                       id="designation"
                       name="designation"
                       value={formData.designation}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                     >
                       <option value="">Select Designation</option>
                       <option value="74">AGM Marketing </option>
@@ -567,7 +461,7 @@ const handleChangeCategory = (selected: Option[]) => {
                     <MultiSelect
                       key="example_id"
                       options={options}
-                      onChange={handleChangeCategory}
+                      onChange={handleChange1}
                       value={optionSelected}
                       isSelectAll={true}
                       menuPlacement={"bottom"}
@@ -602,7 +496,7 @@ const handleChangeCategory = (selected: Option[]) => {
                       name="role"
                       id="role"
                       value={formData.role}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                     >
                       <option value="">Select Role</option>
                       <option value="3">Sales Manager</option>
@@ -625,13 +519,13 @@ const handleChangeCategory = (selected: Option[]) => {
                       value={formData.country}
                       onChange={handleCountry}
                     >
-                      <option value="">Select Country</option>
+                      <option value="">Select Country</option>{" "}
+                      {/* Remove 'selected' */}
                       {countries.map((option) => (
                         <option key={option.id} value={option.id}>
                           {option.name}
                         </option>
                       ))}
-                      {/* Other countries... */}
                     </select>
                     <div id="country_error" className="error">
                       {errors.country}
@@ -648,7 +542,7 @@ const handleChangeCategory = (selected: Option[]) => {
                       id="state_drop"
                       disabled={!formData.country}
                       value={formData.state}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                     >
                       <option value="">Select State</option>
                       {states.map((option) => (
@@ -670,7 +564,7 @@ const handleChangeCategory = (selected: Option[]) => {
                       className="form-control"
                       style={{ height: "50px !important", resize: "none" }}
                       value={formData.address}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                     ></textarea>
                     <div id="address_error" className="error">
                       {errors.address}
@@ -685,9 +579,16 @@ const handleChangeCategory = (selected: Option[]) => {
                       className="form-control"
                       style={{ height: "80px !important", resize: "none" }}
                       value={formData.comment}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                     ></textarea>
-                    <div id="comment_error"></div>
+                    {errors.comment && (
+                      <div
+                        className="invalid-feedback d-block"
+                        id="comment_error"
+                      >
+                        {errors.comment}
+                      </div>
+                    )}
                   </div>
 
                   <div className="col-sm-12" style={{ textAlign: "right" }}>
