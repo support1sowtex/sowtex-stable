@@ -7,6 +7,10 @@ import { useRouter } from "next/navigation";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import axios from "axios";
+const MultiSelect = dynamic(() => import("../components/MultiSelect"), {
+  ssr: false,
+});
 // import { useRouter } from 'next/navigation';
 import Head from "next/head";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -17,8 +21,83 @@ const AdminMenu = dynamic(() => import("../components/AdminMenu"), {
 
 export default function Sidebar() {
   const router = useRouter();
+  const [countries, setCountries] = useState([]);
+  const [optionSelected, setSelected] = useState<Option[] | null>();
+  const [loadingStates, setLoadingStates] = useState(false);
+  const [states, setStates] = useState([]);
+  const getCountries = async () => {
+    try {
+      const configurationObject = {
+        method: "get",
+        url: `https://sowtex.com/get-all-countries`,
+      };
+      const response = await axios(configurationObject);
+      setCountries(response.data);
+      // console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleCountry = async (e) => {
+    const selectedCountry = e.target.value;
 
-  const [formData, setFormData] = useState({
+    setFormData((prev) => ({
+      ...prev,
+      country: selectedCountry,
+      state: "",
+      city: "",
+    }));
+    setStates([]); // Reset states and cities on country change
+    // setCities([]);
+
+    if (!selectedCountry) return;
+
+    try {
+      const response = await axios.get(
+        "https://sowtex.com/get-state-by-countryid-app",
+        {
+          params: { id: selectedCountry },
+        }
+      );
+
+      setStates(response.data || []);
+    } catch (error) {
+      console.error("Failed to fetch states:", error);
+    }
+  };
+  interface FormDataType {
+    FName: string;
+    LName: string;
+    email: string;
+    code: string;
+    mobile: string;
+    password: string;
+    designation: string;
+   
+    role: string;
+    category: number[]; // or string if you reverted to string
+    country: string;
+    state: string;
+    address: string;
+    comment: string;
+  }
+  interface FormErrors {
+  FName: string;
+  LName: string;
+  email: string;
+  code: string;
+  mobile: string;
+  password: string;
+  designation: string;
+  role: string;
+  category: number[];
+  country: string;
+  state: string;
+  address: string;
+  comment: string;
+}
+
+  const [formData, setFormData] = useState<FormDataType>({
     FName: "",
     LName: "",
     email: "",
@@ -26,95 +105,228 @@ export default function Sidebar() {
     mobile: "",
     password: "",
     designation: "",
-    soft_skill_list: [],
     role: "",
+    category:[],
     country: "",
     state: "",
     address: "",
     comment: "",
   });
 
-  const [errors, setErrors] = useState({
-    FName: "",
-    LName: "",
-    email: "",
-    code: "",
-    mobile: "",
-    password: "",
-    designation: "",
-    role: "",
-    country: "",
-    state: "",
-    address: "",
-  });
+const [errors, setErrors] = useState<FormErrors>({
+  FName: "",
+  LName: "",
+  email: "",
+  code: "",
+  mobile: "",
+  password: "",
+  designation: "",
+  role: "",
+  category: [],
+  country: "",
+  state: "",
+  address: "",
+  comment: "",
+});
 
- const handleChange = (e) => {
-  const { name, value } = e.target;
-  setFormData(prev => ({
+ type Option = {
+  value: number;
+  label: string;
+};
+
+const options: Option[] = [
+  { value: 0, label: "Red" },
+  { value: 1, label: "Green" },
+  { value: 2, label: "Blue" },
+  { value: 3, label: "Orange" },
+  { value: 4, label: "Yellow" },
+  { value: 5, label: "Pink" },
+];
+
+const handleChangeCategory = (selected: Option[]) => {
+  setSelected(selected);
+
+  const selectedValues: number[] = selected.map((opt) => opt.value);
+
+  setFormData((prev) => ({
     ...prev,
-    [name]: value
+    category: selectedValues,
   }));
 
-  // Clear error when user starts typing
-  if (name === 'FName' && value.trim() !== '') {
-    setErrors(prev => ({ ...prev, FName: '' }));
+  if (selectedValues.length > 0) {
+    setErrors((prev) => ({
+      ...prev,
+      category: [],
+    }));
   }
-  if (name === 'LName' && value.trim() !== '') {
-    setErrors(prev => ({ ...prev, LName: '' }));
-  }
-  if (name === 'email' && value.trim() !== '') {
-    setErrors(prev => ({ ...prev, email: '' }));
-  }
+
+  console.log("Selected options:", selected);
 };
 
-  const handleMultiSelectChange = (e) => {
-    const options = e.target.options;
-    const selectedOptions = [];
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        selectedOptions.push(options[i].value);
-      }
-    }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      soft_skill_list: selectedOptions,
+      [name]: value,
     }));
+
+    // Clear error when user starts typing
+    if (name === "FName" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, FName: "" }));
+    }
+    if (name === "LName" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, LName: "" }));
+    }
+    if (name === "email" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }
+    if (name === "code" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, code: "" }));
+    }
+    if (name === "mobile" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, mobile: "" }));
+    }
+    if (name === "password" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, password: "" }));
+    }
+    if (name === "designation" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, designation: "" }));
+    }
+    // if (name === "category" && value.trim() !== "") {
+    //   setErrors((prev) => ({ ...prev, category: "" }));
+    // }
+    if (name === "role" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, role: "" }));
+    }
+    if (name === "country" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, country: "" }));
+    }
+    if (name === "state" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, state: "" }));
+    }
+    if (name === "address" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, address: "" }));
+    }
+    if (name === "comment" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, comment: "" }));
+    }
   };
 
- const handleSubmit = (e) => {
-  e.preventDefault();
-  const newErrors = {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newErrors = {
+       FName: "",
+  LName: "",
+  email: "",
+  code: "",
+  mobile: "",
+  password: "",
+  designation: "",
+  role: "",
+  category: [],
+  country: "",
+  state: "",
+  address: "",
+  comment: "",
+    };
 
-  // Validate each field individually
-  if (!formData.FName || formData.FName.trim() === "") {
-    newErrors.FName = "First Name is required";
-  }
-  if (!formData.LName || formData.LName.trim() === "") {
-    newErrors.LName = "Last Name is required";
-  }
-  if (!formData.email || formData.email.trim() === "") {
-    newErrors.email = "Email is required";
-  } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-    newErrors.email = "Email is invalid";
-  }
+    // Validate each field individually
+    if (!formData.FName || formData.FName.trim() === "") {
+      newErrors.FName = "First Name is required";
+    }
+    if (!formData.LName || formData.LName.trim() === "") {
+      newErrors.LName = "Last Name is required";
+    }
+    if (!formData.email || formData.email.trim() === "") {
+      newErrors.email = "Email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
+    }
+    if (!formData.code || formData.code.trim() === "") {
+      newErrors.code = "Select Country Code";
+    }
+    if (!formData.mobile || formData.mobile.trim() === "") {
+      newErrors.mobile = "Mobile No Required";
+    }
+    if (!formData.password || formData.password.trim() === "") {
+      newErrors.password = "Mobile No Required";
+    }
+    if (!formData.designation || formData.designation.trim() === "") {
+      newErrors.designation = "Select Designation";
+    }
+    if (!formData.role || formData.role.trim() === "") {
+      newErrors.role = "Select Role";
+    }
+    // if (
+    //   !formData.category ||
+    //   (Array.isArray(formData.category) && formData.category.length === 0)
+    // ) {
+    //   newErrors.category = "Select Category";
+    // }
+    if (!formData.country || formData.country.trim() === "") {
+      newErrors.country = "Select Country";
+    }
 
-  // If any error exists, set them all at once
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
+    if (!formData.state || formData.state.trim() === "") {
+      newErrors.state = "Select State";
+    }
+    if (!formData.address || formData.address.trim() === "") {
+      newErrors.address = "Address Required";
+    }
+    if (!formData.comment || formData.comment.trim() === "") {
+      newErrors.comment = "Comment Required";
+    }
 
-    // Focus on the first invalid field
-    const firstInvalidField = Object.keys(newErrors)[0];
-    const fieldElement = document.querySelector(`[name="${firstInvalidField}"]`);
-    if (fieldElement) fieldElement.focus();
+    // If any error exists, set them all at once
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
 
-    return;
-  }
+      // Focus on the first invalid field
+      const firstInvalidField = Object.keys(newErrors)[0];
+      const fieldElement = document.querySelector(
+        `[name="${firstInvalidField}"]`
+      );
+     
 
-  // No errors – proceed with submit
-  setErrors({});
-  console.log(formData);
-  // Submit form data
-};
+      return;
+    }
+
+    // No errors – proceed with submit
+    setErrors(null);
+    console.log(formData);
+    // Submit form data
+  };
+  useEffect(() => {
+    getCountries();
+  }, []);
+  const handleChangeCountry = async (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "country" && { state: "" }), // Reset state when country changes
+    }));
+
+    // Fetch states when country changes
+    if (name === "country" && value) {
+      try {
+        setLoadingStates(true);
+        const response = await fetch(`registration/get-state-by-country`);
+        const data = await response.json();
+        setStates(data);
+        setErrors((prev) => ({ ...prev, state: "" })); // Clear state error
+      } catch (error) {
+        console.error("Error fetching states:", error);
+        setStates([]);
+      } finally {
+        setLoadingStates(false);
+      }
+    }
+
+    // Clear other errors...
+  };
   return (
     <>
       <div className="onload-div">
@@ -178,40 +390,47 @@ export default function Sidebar() {
 
           <section className="content card">
             <div className="page-body d-container card-body admin-product-body">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} >
                 <div className="row" id="upgrade_row">
-                 <div className="col-sm-6 mb-3">
-  <label>First Name*</label>
-  <input 
-    type="text" 
-    id="FName" 
-    name="FName"
-    className={`form-control ${errors.FName ? 'is-invalid' : ''}`}
-    value={formData.FName}
-    onChange={handleChange}
-  />
-  {errors.FName && (
-    <div className="invalid-feedback d-block" id="fname_error">
-      {errors.FName}
-    </div>
-  )}
-</div>
+                  <div className="col-sm-6 mb-3">
+                    <label>First Name*</label>
+                    <input
+                      type="text"
+                      id="FName"
+                      name="FName"
+                      className={`form-control ${
+                        errors.FName ? "is-invalid" : ""
+                      }`}
+                      value={formData.FName}
+                      onChange={handleChange}
+                    />
+                    {errors.FName && (
+                      <div
+                        className="invalid-feedback d-block"
+                        id="fname_error"
+                      >
+                        {errors.FName}
+                      </div>
+                    )}
+                  </div>
                   <div className="col-sm-6 mb-3">
                     <label>Last Name*</label>
                     <input
                       type="text"
                       id="LName"
                       name="LName"
-                      className="form-control"
+                      className={`form-control ${
+                        errors.LName ? "is-invalid" : ""
+                      }`}
                       value={formData.LName}
                       onChange={handleChange}
                     />
-                    {errors.lName && (
+                    {errors.LName && (
                       <div
                         className="invalid-feedback d-block"
                         id="lname_errors"
                       >
-                        {errors.lName}
+                        {errors.LName}
                       </div>
                     )}
                   </div>
@@ -222,7 +441,9 @@ export default function Sidebar() {
                       placeholder="Email"
                       type="email"
                       id="email"
-                      className="form-control"
+                      className={`form-control ${
+                        errors.email ? "is-invalid" : ""
+                      }`}
                       value={formData.email}
                       onChange={handleChange}
                     />
@@ -236,9 +457,9 @@ export default function Sidebar() {
                     )}
                   </div>
                   <div className="col-sm-6 mb-3">
-                    <label>Mobile*</label>
                     <div className="row">
                       <div className="col-3 reg-mob-code">
+                        <label>Code*</label>
                         <select
                           name="code"
                           id="code"
@@ -250,51 +471,75 @@ export default function Sidebar() {
                           <option selected value="">
                             Select
                           </option>
-                          <option value="91">+91</option>
-                          <option value="93"> +93 </option>
+                          {countries.map((option) => (
+                            <option key={option.id} value={option.id}>
+                              +{option.id}
+                            </option>
+                          ))}
                           {/* Other country codes... */}
                         </select>
-                        <div id="code_error" className="error">
-                          {errors.code}
-                        </div>
+                        {errors.code && (
+                          <div
+                            className="invalid-feedback d-block"
+                            id="lname_errors"
+                          >
+                            {errors.code}
+                          </div>
+                        )}
                       </div>
                       <div className="col-9 reg-mob-code">
+                        <label>Mobile*</label>
                         <input
                           type="text"
                           name="mobile"
                           id="mobile"
-                          className="form-control"
+                          className={`form-control ${
+                            errors.mobile ? "is-invalid" : ""
+                          }`}
                           value={formData.mobile}
                           onChange={handleChange}
                         />
-                        <div id="mobile_error" className="error">
-                          {errors.mobile}
-                        </div>
+                        {errors.mobile && (
+                          <div
+                            className="invalid-feedback d-block"
+                            id="lname_errors"
+                          >
+                            {errors.mobile}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                   <div className="col-sm-6 mb-3">
                     <label>Password*</label>
                     <input
-                      minLength="8"
                       name="password"
                       placeholder="Enter Password"
                       type="password"
                       id="password"
-                      className="form-control"
+                      className={`form-control ${
+                        errors.email ? "is-invalid" : ""
+                      }`}
                       value={formData.password}
                       onChange={handleChange}
                     />
-                    <div id="password_error" className="error">
-                      {errors.password}
-                    </div>
+                    {errors.password && (
+                      <div
+                        className="invalid-feedback d-block"
+                        id="lname_errors"
+                      >
+                        {errors.password}
+                      </div>
+                    )}
                   </div>
                   <div className="col-sm-6 mb-3">
                     <label htmlFor="last name">
                       <span>*</span> Designation
                     </label>
                     <select
-                      className="form-select"
+                      className={`form-select ${
+                        errors.email ? "is-invalid" : ""
+                      }`}
                       id="designation"
                       name="designation"
                       value={formData.designation}
@@ -305,31 +550,36 @@ export default function Sidebar() {
                       <option value="77">Chairman </option>
                       {/* Other designations... */}
                     </select>
-                    <div id="designation_error" className="error">
-                      {errors.designation}
-                    </div>
+                    {errors.designation && (
+                      <div
+                        className="invalid-feedback d-block"
+                        id="lname_errors"
+                      >
+                        {errors.designation}
+                      </div>
+                    )}
                   </div>
 
-                  <div className="col-sm-2 mb-3">
+                  <div className="col-sm-6 mb-3">
                     <label htmlFor="Category">
                       <span>*</span> Category
                     </label>
-                    <br />
-                    <select
-                      name="soft_skill_list"
-                      className="form-select"
-                      id="soft_skill_list"
-                      multiple
-                      value={formData.soft_skill_list}
-                      onChange={handleMultiSelectChange}
-                      style={{ height: "auto" }}
-                    >
-                      <option value="5">Embroidery-Fabrics</option>
-                      <option value="22">Guipure-Fabric</option>
-                      <option value="21">Lace-Fabrics</option>
-                      <option value="1">Laces</option>
-                      <option value="4">Neck-Patches</option>
-                    </select>
+                    <MultiSelect
+                      key="example_id"
+                      options={options}
+                      onChange={handleChangeCategory}
+                      value={optionSelected}
+                      isSelectAll={true}
+                      menuPlacement={"bottom"}
+                    />
+                    {errors.category && (
+                      <div
+                        className="invalid-feedback d-block"
+                        id="lname_errors"
+                      >
+                        {errors.category}
+                      </div>
+                    )}
                   </div>
 
                   <div className="col-sm-4 mb-3">
@@ -373,11 +623,14 @@ export default function Sidebar() {
                       name="country"
                       id="country"
                       value={formData.country}
-                      onChange={handleChange}
+                      onChange={handleCountry}
                     >
                       <option value="">Select Country</option>
-                      <option value="101">India</option>
-                      <option value="2">Albania</option>
+                      {countries.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
                       {/* Other countries... */}
                     </select>
                     <div id="country_error" className="error">
@@ -398,6 +651,11 @@ export default function Sidebar() {
                       onChange={handleChange}
                     >
                       <option value="">Select State</option>
+                      {states.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
                     </select>
                     <div id="state_error" className="error">
                       {errors.state}
