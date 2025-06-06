@@ -213,7 +213,7 @@ const SignupForm = () => {
     setErrors({});
   
     try {
-      const response = await axios.post("/api/signup", formData);
+      const response = await axios.post("/api/add-new-team", formData);
       console.log("Submitted successfully:", response.data);
       alert("Registration Successful!");
       // setFormData({}); // Optionally reset form

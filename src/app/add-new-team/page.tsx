@@ -37,6 +37,30 @@ export default function Sidebar() {
       console.log(error);
     }
   };
+  //   const options = [
+  //   { value: 0, label: "Red" },
+  //   { value: 1, label: "Green" },
+  //   { value: 2, label: "Blue" },
+  //   { value: 3, label: "Orange" },
+  //   { value: 4, label: "Yellow" },
+  //   { value: 5, label: "Pink" },
+  // ];
+    const [options, setoptions] = useState([
+      
+    ]);
+  const [categories, setCategories] = useState([
+      { value: "0", label: "All Category" },
+    ]);
+    const loadCategories = async () => {
+    try {
+      const res = await fetch("/api/categories");
+      const data = await res.json();
+      setCategories([{ value: "0", label: "All Category" }, ...data]);
+      setoptions([ ...data]);
+    } catch (err) {
+      console.error("Error loading categories:", err);
+    }
+  };
   const [formData, setFormData] = useState({
     country: "",
     state: "",
@@ -87,14 +111,7 @@ export default function Sidebar() {
     label: string;
   };
 
-  const options = [
-    { value: 0, label: "Red" },
-    { value: 1, label: "Green" },
-    { value: 2, label: "Blue" },
-    { value: 3, label: "Orange" },
-    { value: 4, label: "Yellow" },
-    { value: 5, label: "Pink" },
-  ];
+
 
   const [optionSelected, setSelected] = useState<Option[] | null>();
   const handleChange1 = (selected: Option[]) => {
@@ -183,15 +200,24 @@ export default function Sidebar() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const handleSubmit = (e) => {
+  const handleSubmit  = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
-    console.log("all data is valid");
-
+    console.log(formData);
+     try {
+          const response = await axios.post("/api/add-new-team", formData);
+          console.log("Submitted successfully:", response.data);
+          alert("Registration Successful!");
+          // setFormData({}); // Optionally reset form
+        } catch (error) {
+          console.error("Signup failed:", error.response?.data);
+          alert("Registration Failed: " + error.response?.data?.message);
+        }
     // Submit form data
   };
   useEffect(() => {
+    loadCategories();
     getCountries();
   }, []);
   const handleChangeCountry = async (e) => {
