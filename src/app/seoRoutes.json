@@ -1,0 +1,10 @@
+[
+  { "route": "/", "count": 5866 },
+  { "route": "/404", "count": 4387 },
+  { "route": "/favicon.ico", "count": 798 },
+  { "route": "/control-panel/manage", "count": 794 },
+  { "route": "/control-panel/trial-members", "count": 472 },
+  { "route": "/.env", "count": 449 },
+  { "route": "/about-us", "count": 290 }
+
+]

@@ -116,23 +116,23 @@ export default function TeamSlider() {
 
             <div className="row d-flex justify-content-center text-center about-section-icon">
               <div className="col-4 col-md-4 col-lg-2">
-                <Image src="https://sowtex.com/assets/images/sowtex/Speed_Innovation.png" />
+                <img src="https://sowtex.com/assets/images/sowtex/Speed_Innovation.png" />
                 <p>Speed &amp; Innovation</p>
               </div>
               <div className="col-4 col-md-4 col-lg-2">
-                <Image src="https://sowtex.com/assets/images/sowtex/Customer Centric Solutions.png" />
+                <img src="https://sowtex.com/assets/images/sowtex/Customer Centric Solutions.png" />
                 <p>Customer Centric Solutions</p>
               </div>
               <div className="col-4 col-md-4 col-lg-2">
-                <Image src="https://sowtex.com/assets/images/sowtex/Focus on Deals _ Business Growth.png " />
+                <img src="https://sowtex.com/assets/images/sowtex/Focus on Deals _ Business Growth.png " />
                 <p>Focus on Deals &amp; Business Growth</p>
               </div>
               <div className="col-4 col-md-4 col-lg-2">
-                <Image src="https://sowtex.com/assets/images/sowtex/Empowered Businesses.png" />
+                <img src="https://sowtex.com/assets/images/sowtex/Empowered Businesses.png" />
                 <p>Empowered Businesses</p>
               </div>
               <div className="col-4 col-md-4 col-lg-2">
-                <Image src="https://sowtex.com/assets/images/sowtex/Industry Collaboration.png " />
+                <img src="https://sowtex.com/assets/images/sowtex/Industry Collaboration.png " />
                 <p>Industry Collaboration</p>
               </div>
             </div>

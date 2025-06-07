@@ -54,7 +54,7 @@ export default function ManageProducts() {
             <div className="col-sm-6 col-md-3" key={product._id}>
               <div class="product-thumb">
                      <div class="product-image">
-                        <Image src={product.image[0]} alt="" class="img-fluid w-100" />
+                        <img src={product.image[0]} alt="" class="img-fluid w-100" />
                      </div>
                      <div class="product-summary mt-1">
                         <div class="row">

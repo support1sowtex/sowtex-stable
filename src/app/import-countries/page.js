@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Adminmenu from "../components/AdminMenu";
-
+ import "bootstrap/dist/css/bootstrap.min.css";
 export default function ManageProducts() {
   const [products, setProducts] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [type, setType] = useState("country");
-
+ 
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -34,6 +34,7 @@ export default function ManageProducts() {
     <>
       <Adminmenu />
       <div id="main" style={{ marginLeft: "220px" }}>
+         <div className="container-fluid">
       <section className="card top">
          <div className="card-body">
             <div className="row d-flex align-items-center">
@@ -72,12 +73,6 @@ export default function ManageProducts() {
               {loading ? "Importing..." : "Import"}
             </button>
         </div>
-           
-
-           
-
-           
-
             <div style={{ marginTop: "20px" }}>
               {products && <p>{products}</p>}
             </div>
@@ -86,6 +81,7 @@ export default function ManageProducts() {
         </section>
          
         </section>
+        </div>
       </div>
     </>
   );
