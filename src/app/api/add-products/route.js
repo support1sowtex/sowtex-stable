@@ -36,7 +36,7 @@ export async function POST(request) {
     const parsedData = JSON.parse(jsonData);
     const selectedOptionsRaw = formData.get('selectedOptions'); // ✅ get single field
     const colors = selectedOptionsRaw ? JSON.parse(selectedOptionsRaw) : [];
- 
+    //  let uniqueId = "";
     // Process uploaded files
     const imagePaths = [];
     for (const file of files) {
@@ -51,10 +51,14 @@ export async function POST(request) {
     }
     const colorString = colors.join(','); 
     // Create and save product
-       const count = await Product.countDocuments({ categoryId: Number(parsedData.cat)});
-   const parentCategory = await Category.findOne({ id:Number(parsedData.cat) });
-    let uniqueId = "";
-        if (!parentCategory) {
+    const count = await Product.countDocuments({ categoryId: Number(parsedData.cat)});
+    console.log(count);
+    // const parentCategory = await Category.findOne({ id:27});
+    // const parentCategory=27;
+     const parentCategory = await Category.findOne({ id:Number(parsedData.cat) });
+     console.log(parentCategory);
+     let uniqueId = "";
+      if (!parentCategory) {
       console.log("Category not found");
     } else {
       const prefix = parentCategory.prefix;
@@ -65,8 +69,11 @@ export async function POST(request) {
       console.log("Generated ID:", uniqueId);
     }
 
-// const parentCategory = await Category.countDocuments({ categoryId: 1 });
-//       console.log("count is" ,parentCategory);
+    // const parentCategory = await Category.countDocuments({ categoryId: 1 });
+    //       console.log("count is" ,parentCategory);
+    // const sizes = parsedData.sizes.map(size => size.label);
+    const { sizes: _, ...productData } = parsedData; // Exclude original 'sizes'
+    const formattedSizes = parsedData.sizes ? parsedData.sizes.map(size => size.label) : [];
 
     const product = new Product({
       ...parsedData,
@@ -75,10 +82,11 @@ export async function POST(request) {
       categoryId: Number(parsedData.cat),
       subCategoryId: Number(parsedData.sub_cat),
       colors: colorString,
+      sizes: formattedSizes, 
       createdDate: new Date(),
       updatedDate: new Date(),
     });
-
+    console.log("Product to save:", product);
     await product.save();
 
     return NextResponse.json(

@@ -136,7 +136,7 @@ export default function EditProducts() {
 useEffect(() => {
   const fetchProducts = async () => {
     try {
-      const res = await fetch('/api/products?id=6847f771f296e3e992440402');
+      const res = await fetch('/api/products?id=6848345e852eb118d01fb52f');
       const data = await res.json();
 
       if (res.ok && data.product) {
