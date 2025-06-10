@@ -7,6 +7,7 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import Script from 'next/script';
 import Image from 'next/image';
+import "bootstrap/dist/css/bootstrap.min.css";
 export default function ManageProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +78,7 @@ export default function ManageProducts() {
                   <section id="default" className="padding-top0">
                      <div className="row">
                      <Zoom>
-                     <Image
+                     <img
                         alt="That Wanaka Tree, New Zealand by Laura Smetsers"
                         src="https://sowtex.com/assets/images/Product/S38SD003141283.jpeg"
                         width="500"
@@ -142,8 +143,6 @@ export default function ManageProducts() {
                      <div className="category-image px-2">
                         <img src="https://sowtex.com/assets/images/logos/173376900087036.jpg" alt="" className="img-fluid w-100 img-thumbnail" />
                      </div>
-
-                     
                         <div className="d-flex">
                            <div style={{width: '120px'}}><strong>Location</strong></div>
                            <div>: Gujarat, India                           </div>
@@ -156,13 +155,10 @@ export default function ManageProducts() {
                            <div style={{width: '120px'}}><strong>No. of Employees</strong></div>
                            <div>: 11-25                           </div>
                         </div>
-
                         <div className="d-flex">
                            <div style={{width: '120px'}}><strong>Membership Plan</strong></div>
                            <div>: Trial                           </div>
                         </div>
-                   
-
                   </div>
                   <div><a target="__blank" className="mt-2 btn btn-warning" href="https://sowtex.com/future-textile-manufacturing-company/denim-fabrics/denim-with-spandex-/product-detail/S38SD00314">
                         View Product</a></div>

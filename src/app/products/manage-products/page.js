@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminMenu from "../../components/AdminMenu";
 import Image from 'next/image';
+import "bootstrap/dist/css/bootstrap.min.css";
 export default function ManageProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);

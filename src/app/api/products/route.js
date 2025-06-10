@@ -1,94 +1,106 @@
 import { NextResponse } from "next/server";
-import connectToDatabase from "../../lib/dbConnect"; // Adjust path as needed
+import dbConnect from "../../lib/dbConnect"; // Adjust path as needed
 import Product from "../../Models/Product"; // Adjust path as needed
 import Category from "../../Models/Categories"; // Adjust path as needed
 import User from "../../Models/User"; // Adjust path as needed
 import { faker } from '@faker-js/faker';
-export async function GET() {
+import mongoose from "mongoose";
+
+export async function GET(request) {
   try {
-    // Connect to MongoDB
-    await connectToDatabase();
-    
-      const generateUser = (index) => ({
-      id: 1,
-      uniqueCode: `IND${index.toString().padStart(7, "0")}`,
-      fName: faker.person.firstName().toLowerCase(),
-      lName: faker.person.lastName().toLowerCase(),
-      email: faker.internet.email().toLowerCase(),
-      code: faker.number.int({ min: 10, max: 99 }).toString(),
-      phoneNumber: "+91-" + faker.phone.number("9#########"),
-      companyName: faker.company.name(),
-      natOfBus: faker.number.int({ min: 10, max: 99 }).toString(),
-      degination: faker.number.int({ min: 10, max: 99 }).toString(),
-      country: "101",
-      state: "1",
-      city: "1",
-      zipCode: faker.location.zipCode(),
-      password: "123456",
-      password_confirm: "123456",
-      membership: "",
-      zipcode: faker.location.zipCode(),
-      memType: "Free",
-    });
+    await dbConnect(); // Ensure connection to MongoDB
 
-    // Insert dummy users
+    const id = request.nextUrl.searchParams.get("id");
 
-    // const insertDummyUsers = async (count = 10) => {
-    //   try {
-    //     // Get current count of users with uniqueCode starting with 'IND'
-    //     const baseCount = await User.countDocuments({
-    //       uniqueCode: { $regex: /^IND/ },
-    //     });
-    //     // return false;
-    //     const users = [];
+    if (id) {
+      const product = await Product.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(id),
+          },
+        },
+        {
+          $lookup: {
+            from: "categories",
+            localField: "categoryId",
+            foreignField: "id",
+            as: "categoryInfo",
+          },
+        },
+        {
+          $unwind: {
+            path: "$categoryInfo",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "subcategories",
+            localField: "subCategoryId",
+            foreignField: "subCategoryId",
+            as: "subCategoryInfo",
+          },
+        },
+        {
+          $unwind: {
+            path: "$subCategoryInfo",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            sku: 1,
+            content: 1,
+            moq: 1,
+            image: 1,
+            createdDate: 1,
+            colors:1,
+            description:1,
+            categoryName: "$categoryInfo.name",
+            subCategoryName: {
+              $ifNull: ["$subCategoryInfo.name", "No Subcategory"],
+            },
+          },
+        },
+      ]);
 
-    //     for (let i = 1; i <= count; i++) {
-    //       const currentIndex = baseCount + i;
-    //       const user = generateUser(currentIndex);
-    //       users.push(user);
-    //       // console.log(user);return false;
-    //     }
+      if (!product || product.length === 0) {
+        return NextResponse.json({ message: "Product not found" }, { status: 404 });
+      }
 
-    //     await User.insertMany(users);
-    //     console.log(
-    //       `${count} dummy users inserted starting from IND${(baseCount + 1)
-    //         .toString()
-    //         .padStart(7, "0")}`
-    //     );
-    //     mongoose.disconnect();
-    //   } catch (error) {
-    //     console.error("Error inserting users:", error);
-    //   }
-    // };
-    // insertDummyUsers(10);
-    const productsWithCategory = await Product.aggregate([
+      return NextResponse.json({ message: "Product fetched", product: product[0],status:"ok" });
+    }
+
+    // Return all products if no ID
+    const allProducts = await Product.aggregate([
       {
         $lookup: {
-          from: 'categories',
-          localField: 'categoryId',
-          foreignField: 'id', // Make sure this matches your Category schema
-          as: 'categoryInfo'
-        }
+          from: "categories",
+          localField: "categoryId",
+          foreignField: "id",
+          as: "categoryInfo",
+        },
       },
       {
         $unwind: {
-          path: '$categoryInfo',
-          preserveNullAndEmptyArrays: true
-        }
+          path: "$categoryInfo",
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $lookup: {
-          from: 'subcategories', // Ensure this matches your collection name
-          localField: 'subCategoryId',
-          foreignField: 'subCategoryId', // Must match exactly
-          as: 'subCategoryInfo'
-        }
+          from: "subcategories",
+          localField: "subCategoryId",
+          foreignField: "subCategoryId",
+          as: "subCategoryInfo",
+        },
       },
       {
         $unwind: {
-          path: '$subCategoryInfo',
-          preserveNullAndEmptyArrays: true // Keep this true to include products without subcategories
-        }
+          path: "$subCategoryInfo",
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $project: {
@@ -98,20 +110,15 @@ export async function GET() {
           moq: 1,
           image: 1,
           createdDate: 1,
-          categoryName: '$categoryInfo.name',
-          subCategoryName: { 
-            $ifNull: ['$subCategoryInfo.name', 'No Subcategory'] // Handle null cases
-          }
-        }
-      }
+          categoryName: "$categoryInfo.name",
+          subCategoryName: {
+            $ifNull: ["$subCategoryInfo.name", "No Subcategory"],
+          },
+        },
+      },
     ]);
-   // for example, from request
 
-
-
-    
-
-    return Response.json({ message: "Product list", productsWithCategory  });
+    return NextResponse.json({ message: "Product list", productsWithCategory: allProducts });
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json({ message: "Server error" }, { status: 500 });

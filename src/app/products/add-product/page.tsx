@@ -117,6 +117,8 @@ export default function Sidebar() {
     "WRAP",
     "ZDHC",
   ]);
+
+  
   const [units, setUnits] = useState([
     { value: "63", label: "Air Textured Yarn(ATY)" },
     { value: "55", label: "Boxes(Bxs)" },
@@ -723,7 +725,7 @@ export default function Sidebar() {
                             key={index}
                             style={{ position: "relative", margin: "5px" }}
                           >
-                            <Image
+                            <img
                               alt={`Preview ${index}`}
                               src={src}
                               style={{ width: "100px", height: "100px" }}
